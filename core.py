@@ -81,8 +81,7 @@ def login():
 
 if __name__ == '__main__':
     # 下面是使用wxPython的固定用法
-    app = wx.PySimpleApp()
+    app = wx.App()
     main_win = mainWin(None)
     main_win.Show()
-    print("test1")
     app.MainLoop()

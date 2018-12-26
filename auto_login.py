@@ -14,25 +14,26 @@ from ver_code import validation_code_recognition
 
 test_url = 'http://quan.suning.com/getSysTime.do'  # 测试连接状态url
 
-conf = ConfigParser()
-conf.read('conf.ini', encoding='utf-8')
-if conf.get('run', 'log_level') == 'debug':
-    log_level = logging.DEBUG
-elif conf.get('run', 'log_level') == 'info':
-    log_level = logging.INFO
-elif conf.get('run', 'log_level') == 'warning':
-    log_level = logging.WARNING
-else:
-    print('log level error.')
-    sys.exit(1)
-
-logging.basicConfig(
-    # filename='run.log',
-    format='[%(asctime)s] - %(levelname)s - %(module)s: %(message)s',
-    datefmt='%Y-%m-%d %H:%M:%S',
-    level=log_level,
-    handlers=[logging.FileHandler("run.log"), logging.StreamHandler()]
-)
+config_file = "conf.ini"
+if os.path.exists(config_file):
+    conf = ConfigParser()
+    conf.read(config_file, encoding='utf-8')
+    if conf.get('run', 'log_level') == 'debug':
+        log_level = logging.DEBUG
+    elif conf.get('run', 'log_level') == 'info':
+        log_level = logging.INFO
+    elif conf.get('run', 'log_level') == 'warning':
+        log_level = logging.WARNING
+    else:
+        print('log level error.')
+        sys.exit(1)
+    logging.basicConfig(
+        # filename='run.log',
+        format='[%(asctime)s] - %(levelname)s - %(module)s: %(message)s',
+        datefmt='%Y-%m-%d %H:%M:%S',
+        level=log_level,
+        handlers=[logging.FileHandler("run.log"), logging.StreamHandler()]
+    )
 
 
 def connect_wifi():
