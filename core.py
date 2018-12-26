@@ -18,6 +18,7 @@ class TestThread(threading.Thread):
         self.check = check
         self.config_file = "conf.ini"
         self.conf = ConfigParser()
+        self.conf.read(self.config_file, encoding='utf-8')
         self.log_level = logging.INFO
         self.begin_time = ""
         self.end_time = ""
@@ -53,7 +54,7 @@ def writeConfig(self):
     self.conf.set('user', 'check', str(self.check))
 
 def readConfig(self):
-    self.conf.read(self.config_file, encoding='utf-8')
+    
 
     #获取开始时间和结束时间
     self.begin_time = self.conf.get('run', 'begin_time')
@@ -100,11 +101,19 @@ def autostart(self):
 def login(self):
     auto_login.test(self)#第一次启动
     sleep(5)
-    schedule.every(5).minutes.do(auto_login.test,self)
-    # schedule.every(5).seconds.do(auto_login.test,self)#测试
+    if self.conf.get('run', 'time_unit') == 'minutes':
+        schedule.every(self.conf.getint('run', 'every_time')).minutes.do(auto_login.test,self)
+    elif self.conf.get('run', 'time_unit') == 'seconds':
+        schedule.every(self.conf.getint('run', 'every_time')).seconds.do(auto_login.test,self)#测试
+    else:
+        logging.critical('conf.ini配置错误：{}'.format(
+            self.conf.getint('run', 'every_time'),
+            self.conf.get('run', 'time_unit')
+        ))
+        sys.exit(1)
     while (1):
         schedule.run_pending()
-        sleep(5)
+        sleep(1)
 
 
 if __name__ == '__main__':
