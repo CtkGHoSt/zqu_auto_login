@@ -23,8 +23,6 @@ class MyFrame(wx.Frame):
         self.btn_open = wx.Button(self, wx.ID_ANY, u"开启", wx.DefaultPosition, wx.DefaultSize, 0)
         gSizer.Add(self.btn_open, 0, wx.ALL, 5)
 
-
-
         self.SetSizer(gSizer)
         self.Layout()
         self.Centre(wx.BOTH)
@@ -51,9 +49,3 @@ class MyFrame(wx.Frame):
 
     def open( self, event ):
         event.Skip()
-
-    def myClose(self, event):
-        ret = wx.MessageBox('Do you really want to leave?', 'Confirm', wx.OK | wx.CANCEL)
-        if ret == wx.OK:
-            wx.GetApp().ExitMainLoop()
-            event.Skip()

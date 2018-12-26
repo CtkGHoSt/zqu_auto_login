@@ -13,7 +13,7 @@ conf.ini ：
 ```
 [user]
 userid = 学号
-password = 8位密码
+password = 6位密码或8位密码
 
 [run]
 time_unit = 每次间隔的时间单位 （minutes/seconds） 

@@ -51,12 +51,12 @@ def writeConfig(userid,password,check):
            "begin_time = 07:00\n" \
            "end_time = 23:59\n" \
             "log_level = debug"
-    if os.path.exists(config_file):
-        os.remove(config_file)
+    # if os.path.exists(config_file):
+    #     os.remove(config_file)
     f = open(config_file, 'w')
     f.write(date)
     f.close()
-    hideFile(config_file)
+    # hideFile(config_file)
 
 # 隐藏配置文件
 def hideFile(filePath):
