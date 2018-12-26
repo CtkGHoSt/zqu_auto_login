@@ -191,11 +191,14 @@ def test():
     password = conf.get('user', 'password')
     try:
         # 若密码长度小于8当成移动网络
-        if len(password) < 8:
+        if len(password) == 6:
             auto_login_1(userid, password)
-        else:
+        elif len(password) == 8:
             auto_login_1(userid, password[2:])
             auto_login_2(userid, password)
+        else:
+            logging.error("密码错误")
+
     except Exception as e:
         logging.error("未知异常：{}".format(e.message))
 
