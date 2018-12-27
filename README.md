@@ -21,7 +21,7 @@ time_unit = 每次间隔的时间单位 （minutes/seconds）
 every_time = 每次间隔时间
 begin_time = 允许登录时间
 end_time = 不允许登录时间
-log_level = 日志级别输出
+log_level = 日志级别输出 （debug/info/warning）
 ```
 exm：
 ```
