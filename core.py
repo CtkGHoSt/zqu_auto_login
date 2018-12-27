@@ -16,7 +16,7 @@ class TestThread(threading.Thread):
         self.userid =userid
         self.password = password
         self.check = check
-        self.config_file = "conf.ini"
+        self.config_file = os.getcwd()+"/conf.ini"
         self.conf = ConfigParser()
         self.log_level = logging.INFO
         self.begin_time = ""
@@ -50,9 +50,9 @@ class mainWin(Frame.MyFrame):
 def writeConfig(self):
     if not os.path.exists(self.config_file):
         date = "[user]\n" \
-               "userid =" + self.userid + "\n" \
-               "password =" + self.password + "\n" \
-               "check =" + str(self.check) + "\n\n" \
+               "userid = " + self.userid + "\n" \
+               "password = " + self.password + "\n" \
+               "check = " + str(self.check) + "\n\n" \
                "[run]\n" \
                "time_unit = minutes\n" \
                "every_time = 5\n" \
@@ -64,10 +64,11 @@ def writeConfig(self):
         f.close()
     else:
         self.conf.read(self.config_file, encoding='utf-8')
-        self.conf.set('user', 'userid', self.userid)
+        self.conf.set('user', 'userid', value=self.userid)
         self.conf.set('user', 'password', self.password)
         self.conf.set('user', 'check', str(self.check))
-
+        with open(self.config_file, 'w') as fw:  # 循环写入
+            self.conf.write(fw)
 
 def readConfig(self):
     self.conf.read(self.config_file, encoding='utf-8')
