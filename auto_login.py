@@ -9,6 +9,7 @@ from time import sleep
 from datetime import datetime
 from base64 import b64encode
 from configparser import ConfigParser
+from urllib import parse
 
 from ver_code import validation_code_recognition
 
@@ -144,23 +145,7 @@ def auto_login_2(userId, password):
         logging.warning('未通过局域网验证')
         return
     login_2 = se.get(test_status.url)
-    # 获取验证码图片
-    v_code_image = open('test.jpg', 'wb+')
-    code_url = 'http://enet.10000.gd.cn:10001/common/image.jsp'
-    v_code_image.write(se.get(code_url, cookies=login_2.cookies).content)
-    v_code_image.close()
-    # 验证码识别
-    v_code = validation_code_recognition('./test.jpg')
-    os.remove('./test.jpg')#删除验证码文件
-    logging.debug('验证码：{}'.format(v_code))
-    post_text = {
-        'edubas': '119.146.99.27',
-        'eduuser': '10.71.98.198',
-        'password1': str(b64encode(bytes(password, encoding="utf-8")), encoding="utf-8"),
-        'patch': 'wifi',
-        'rand': v_code,
-        'userName1': userId,
-    }
+    
     http_headers = {
         'Accept': 'text/html, application/xhtml+xml, application/xml; q=0.9, */*; q=0.8',
         'Accept-Encoding': 'gzip, deflate',
@@ -174,10 +159,35 @@ def auto_login_2(userId, password):
         'Upgrade-Insecure-Requests': '1',
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.140 Safari/537.36 Edge/18.17763'
     }
+    
     try:
         http_headers['Referer'] = test_status.url
+        url_parse = parse.urlparse(test_status.url) # 获取链接参数
+        url_parse_dict = parse.parse_qs(url_parse.query)
     except UnboundLocalError:
         logging.error('auto login 2 - UnboundLocalError')
+        
+        
+    # 获取验证码图片
+    v_code_image = open('test.jpg', 'wb+')
+    code_url = 'http://enet.10000.gd.cn:10001/common/image.jsp'
+    v_code_image.write(se.get(code_url, cookies=login_2.cookies).content)
+    v_code_image.close()
+    # 验证码识别
+    v_code = validation_code_recognition('./test.jpg')
+    os.remove('./test.jpg')#删除验证码文件
+    logging.debug('验证码：{}'.format(v_code))
+    
+    sleep(2)
+    
+    post_text = {
+        'edubas': url_parse_dict['wlanacip'],
+        'eduuser': url_parse_dict['wlanuserip'],
+        'password1': str(b64encode(bytes(password, encoding="utf-8")), encoding="utf-8"),
+        'patch': 'wifi',
+        'rand': v_code,
+        'userName1': userId,
+    }
 
     login_http = 'http://enet.10000.gd.cn:10001/login.do'
 
@@ -203,6 +213,7 @@ def test(self):
             auto_login_1(userid, password)
         elif len(password) == 8:
             auto_login_1(userid, password[2:])
+            sleep(2)
             auto_login_2(userid, password)
         else:
             logging.error("密码错误")
