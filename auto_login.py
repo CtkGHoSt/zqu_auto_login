@@ -42,6 +42,8 @@ def check_wifi():
 
 def is_campus_network():
     """
+    判断是否校园网
+    
     网络错误返回-1
     非局域网内返回0
     局域网内返回1
@@ -72,7 +74,7 @@ def auto_login_1(userId, password):
         test_status = requests.get(test_url)  # 获取重定向连接
     except requests.exceptions.ConnectionError:
         logging.error("重定向局域网失败")
-    # logging.debug('局域网验证连接 {}'.format(test_status.url))
+        return
     if test_status.url.find('10.0.1.51') == -1:
         logging.debug('已经通过局域网验证')
         return
@@ -114,7 +116,9 @@ def auto_login_2(userId, password):
 
     se = requests.session()  # 新建会话
     test_status = se.get(test_url)  # 获取重定向连接
-    # logging.debug('局域网验证连接 {}'.format(test_status.url))
+    if test_status.url == test_url:
+        logging.info('可以上网')
+        return
     if test_status.url.find('10.0.1.51') != -1:
         logging.warning('未通过局域网验证')
         return
@@ -133,6 +137,8 @@ def auto_login_2(userId, password):
         'Upgrade-Insecure-Requests': '1',
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.140 Safari/537.36 Edge/18.17763'
     }
+    
+    url_parse_dict = dict()
     
     try:
         http_headers['Referer'] = test_status.url
@@ -188,15 +194,12 @@ def test(self):
         elif len(self.password) == 8:
             auto_login_1(self.userid, self.password[2:])
             sleep(2)
-            if check_wifi() == -1:
-                logging.info('可以上网')
-                return 0
             auto_login_2(self.userid, self.password)
         else:
             logging.error("密码错误")
 
     except Exception as e:
-        logging.error("未知异常：{}".format(e.message))
+        logging.error("未知异常：{}".format(e))
 
 
 if __name__ == '__main__':
