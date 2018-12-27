@@ -14,27 +14,27 @@ from urllib import parse
 from ver_code import validation_code_recognition
 
 
-#
-#     self.config_file = "./conf.ini"
-#     self.conf = ConfigParser()
-#     self.conf.read(self.config_file, encoding='utf-8')
-#     if self.conf.get('run', 'log_level') == 'debug':
-#         self.log_level = logging.DEBUG
-#     elif self.conf.get('run', 'log_level') == 'info':
-#         self.log_level = logging.INFO
-#     elif self.conf.get('run', 'log_level') == 'warning':
-#         self.log_level = logging.WARNING
-#     else:
-#         print('log level error.')
-#         sys.exit(1)
-#     logging.basicConfig(
-#         # filename='run.log',
-#         format='[%(asctime)s] - %(levelname)s - %(module)s: %(message)s',
-#         datefmt='%Y-%m-%d %H:%M:%S',
-#         level=self.log_level,
-#         handlers=[logging.FileHandler("run.log"), logging.StreamHandler()]
-#     )
-#
+def logging_config_init()
+    self.config_file = "./conf.ini"
+    self.conf = ConfigParser()
+    self.conf.read(self.config_file, encoding='utf-8')
+    if self.conf.get('run', 'log_level') == 'debug':
+        self.log_level = logging.DEBUG
+    elif self.conf.get('run', 'log_level') == 'info':
+        self.log_level = logging.INFO
+    elif self.conf.get('run', 'log_level') == 'warning':
+        self.log_level = logging.WARNING
+    else:
+        print('log level error.')
+        sys.exit(1)
+    logging.basicConfig(
+        # filename='run.log',
+        format='[%(asctime)s] - %(levelname)s - %(module)s: %(message)s',
+        datefmt='%Y-%m-%d %H:%M:%S',
+        level=self.log_level,
+        handlers=[logging.FileHandler("run.log"), logging.StreamHandler()]
+    )
+
 
 test_url = 'http://quan.suning.com/getSysTime.do'  # 测试连接状态url
 
