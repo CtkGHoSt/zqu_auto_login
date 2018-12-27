@@ -1,4 +1,4 @@
-# 肇庆学院电信wifi校园网自动登录 v0.0.3 
+# 肇庆学院电信wifi校园网自动登录 v0.1.0 
 ### by ctkghost
 ---   
 
@@ -7,7 +7,8 @@
 
 > * 源码在source文件夹下
 > * code文件夹下是用于验证码识别的图片
-> * 执行方式：当前目录下shift+右键打开cmd/powershell，执行auto_login
+> * 执行方式：直接打开core.exe
+> * ~~执行方式：当前目录下shift+右键打开cmd/powershell，执行auto_login~~
 
 conf.ini ：
 ```
@@ -40,6 +41,10 @@ todo：
 整合验证码识别的图片到程序中   
 …
       
+> v0.1.0 更新 
+更新了windows ui     
+修复了无数个bug     
+
 > v0.0.3 更新     
 修复了auto login 1获取重定向连接异常       
 
@@ -47,4 +52,3 @@ todo：
 更新log输出   
 修复无数个bug
 
-[markdown to html](https://1024tools.com/markdown)
