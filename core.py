@@ -23,11 +23,10 @@ class TestThread(threading.Thread):
 
 
     def run(self):  # 线程执行的代码
-        print(self.userid + self.password)
+        logging.info('学号：' + self.userid + ' 密码:' + self.password)
         writeConfig(self)#写入数据到配置文件
         readConfig(self)
-        auto_login.test(self)
-        sleep(5)
+
         login(self)
 
 # 创建mainWin类并传入my_win.MyFrame
@@ -100,8 +99,11 @@ def autostart(filePath):
 
 # 子线程要执行的代码
 def login(self):
-    # schedule.every(5).minutes.do(auto_login.test)
-    schedule.every(5).seconds.do(auto_login.test,self)#测试
+    #第一次登陆
+    auto_login.test(self)
+    sleep(5)
+    schedule.every(5).minutes.do(auto_login.test)
+    # schedule.every(5).seconds.do(auto_login.test,self)#测试
     while (1):
         schedule.run_pending()
         sleep(5)
@@ -109,7 +111,6 @@ def login(self):
 
 if __name__ == '__main__':
     # 下面是使用wxPython的固定用法
-    print(wx.version())
     app = wx.App()
     main_win = mainWin(None)
     main_win.Show()

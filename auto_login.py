@@ -135,9 +135,9 @@ def auto_login_1(userId, password):
 
 
 def auto_login_2(userId, password):
+    global url_parse_dict
     logging.info('开始电信验证')
     logging.info('学号：'+userId+' 密码:'+password)
-
     se = requests.session()  # 新建会话
     test_status = se.get(test_url)  # 获取重定向连接
     # logging.debug('局域网验证连接 {}'.format(test_status.url))
@@ -169,7 +169,6 @@ def auto_login_2(userId, password):
     except KeyError:
         logging.error('auto login 2 - KeyError 重定向链接{}'.format(test_status.url))
         
-        
     # 获取验证码图片
     v_code_image = open('test.jpg', 'wb+')
     code_url = 'http://enet.10000.gd.cn:10001/common/image.jsp'
@@ -179,9 +178,7 @@ def auto_login_2(userId, password):
     v_code = validation_code_recognition('./test.jpg')
     os.remove('./test.jpg')#删除验证码文件
     logging.debug('验证码：{}'.format(v_code))
-    
     sleep(2)
-    
     post_text = {
         'edubas': url_parse_dict['wlanacip'],
         'eduuser': url_parse_dict['wlanuserip'],
@@ -207,16 +204,17 @@ def test(self):
     if check_wifi() == -1:
         logging.info('可以上网')
         return 0
-    userid = self.conf.get('user', 'userid')
-    password = self.conf.get('user', 'password')
     try:
-        # 若密码长度小于8当成移动网络
-        if len(password) == 6:
-            auto_login_1(userid, password)
-        elif len(password) == 8:
-            auto_login_1(userid, password[2:])
+        # 若密码长度为6当成移动网络，8位电信网络
+        if len(self.password) == 6:
+            auto_login_1(self.userid, self.password)
+        elif len(self.password) == 8:
+            auto_login_1(self.userid, self.password[2:])
             sleep(2)
-            auto_login_2(userid, password)
+            if check_wifi() == -1:
+                logging.info('可以上网')
+                return 0
+            auto_login_2(self.userid, self.password)
         else:
             logging.error("密码错误")
 
