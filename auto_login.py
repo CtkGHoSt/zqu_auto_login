@@ -1,8 +1,6 @@
 import requests
 import json
 import os
-import schedule
-import sys
 import logging
 
 from time import sleep

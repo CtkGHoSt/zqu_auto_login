@@ -2,21 +2,20 @@ import wx  # 引入wx模块<br>
 import Frame
 import auto_login
 import schedule
-import os
+from os import getcwd,path,_exit,system
 from time import sleep
-import platform
-import threading
+from threading import Thread
 from configparser import ConfigParser
 import logging
 import sys
 
-class TestThread(threading.Thread):
+class TestThread(Thread):
     def __init__(self,userid, password, check):  # 线程实例化时立即启动
-        threading.Thread.__init__(self)
+        Thread.__init__(self)
         self.userid =userid
         self.password = password
         self.check = check
-        self.config_file = os.getcwd()+"/conf.ini"
+        self.config_file = getcwd()+"/conf.ini"
         self.conf = ConfigParser()
         self.log_level = logging.INFO
         self.begin_time = ""
@@ -44,11 +43,11 @@ class mainWin(Frame.MyFrame):
             thread = TestThread(userid, password, check)
             thread.start()
         else:
-            os._exit(0)
+            _exit(0)
 
 # 写入配置文件
 def writeConfig(self):
-    if not os.path.exists(self.config_file):
+    if not path.exists(self.config_file):
         date = "[user]\n" \
                "userid = " + self.userid + "\n" \
                "password = " + self.password + "\n" \
@@ -94,25 +93,24 @@ def readConfig(self):
 
 # 隐藏配置文件
 def hideFile(filePath):
-    if 'Windows' in platform.system():
+    if 'Windows' in system:
         cmd = 'attrib +h "' + filePath + '"'
-        os.system(cmd)
+        system(cmd)
 
 # 开机自启
 def autostart(self):
     name = 'AutoLogin'  # 要添加的项值名称
     # filePath = os.path.realpath(__file__)  # 测试使用
-    filePath = os.getcwd()+"\zqu_auto_login.exe"#正式版使用
-    if 'Windows' in platform.system():
-        try:
-            if self.check:
-                cmd = 'reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run" /v ' + name + ' /t reg_sz /d "' + filePath + '" /f '
-                os.system(cmd)
-            else:
-                cmd = 'reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run" /v ' + name + ' /f '
-                os.system(cmd)
-        except:
-            logging.error('修改开机项失败')
+    filePath = getcwd()+"\zqu_auto_login.exe"#正式版使用
+    try:
+        if self.check:
+            cmd = 'reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run" /v ' + name + ' /t reg_sz /d "' + filePath + '" /f '
+            system(cmd)
+        else:
+            cmd = 'reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run" /v ' + name + ' /f '
+            system(cmd)
+    except:
+        logging.error('修改开机项失败')
 
 
 
