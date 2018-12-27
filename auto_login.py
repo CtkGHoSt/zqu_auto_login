@@ -166,6 +166,8 @@ def auto_login_2(userId, password):
         url_parse_dict = parse.parse_qs(url_parse.query)
     except UnboundLocalError:
         logging.error('auto login 2 - UnboundLocalError')
+    except KeyError:
+        logging.error('auto login 2 - KeyError')
         
         
     # 获取验证码图片
