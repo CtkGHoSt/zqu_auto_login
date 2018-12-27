@@ -6,6 +6,10 @@ import os
 from time import sleep
 import platform
 import threading
+from configparser import ConfigParser
+import logging
+import sys
+
 
 class TestThread(threading.Thread):
     def __init__(self,userid, password, check):  # 线程实例化时立即启动
@@ -13,13 +17,18 @@ class TestThread(threading.Thread):
         self.userid =userid
         self.password = password
         self.check = check
+        self.config_file = "conf.ini"
+        self.conf = ConfigParser()
+        self.log_level = logging.INFO
+
 
     def run(self):  # 线程执行的代码
         print(self.userid + self.password)
-        writeConfig(self.userid,self.password,self.check)#写入数据到配置文件
-        auto_login.test()
+        writeConfig(self)#写入数据到配置文件
+        readConfig(self)
+        auto_login.test(self)
         sleep(5)
-        login()
+        login(self)
 
 # 创建mainWin类并传入my_win.MyFrame
 class mainWin(Frame.MyFrame):
@@ -39,12 +48,11 @@ class mainWin(Frame.MyFrame):
             os._exit(0)
 
 # 写入配置文件
-def writeConfig(userid,password,check):
-    config_file = "conf.ini"
+def writeConfig(self):
     date = "[user]\n" \
-           "userid =" + userid + "\n" \
-            "password =" + password + "\n" \
-            "check ="+ str(check) +"\n\n"\
+           "userid =" + self.userid + "\n" \
+            "password =" + self.password + "\n" \
+            "check ="+ str(self.check) +"\n\n"\
            "[run]\n" \
            "time_unit = minutes\n" \
            "every_time = 5\n" \
@@ -53,10 +61,29 @@ def writeConfig(userid,password,check):
             "log_level = debug"
     # if os.path.exists(config_file):
     #     os.remove(config_file)
-    f = open(config_file, 'w')
+    f = open(self.config_file, 'w')
     f.write(date)
     f.close()
     # hideFile(config_file)
+
+def readConfig(self):
+    self.conf.read(self.config_file, encoding='utf-8')
+    if self.conf.get('run', 'log_level') == 'debug':
+        self.log_level = logging.DEBUG
+    elif self.conf.get('run', 'log_level') == 'info':
+        self.log_level = logging.INFO
+    elif self.conf.get('run', 'log_level') == 'warning':
+        self.log_level = logging.WARNING
+    else:
+        print('log level error.')
+        sys.exit(1)
+    logging.basicConfig(
+        # filename='run.log',
+        format='[%(asctime)s] - %(levelname)s - %(module)s: %(message)s',
+        datefmt='%Y-%m-%d %H:%M:%S',
+        level=self.log_level,
+        handlers=[logging.FileHandler("run.log"), logging.StreamHandler()]
+    )
 
 # 隐藏配置文件
 def hideFile(filePath):
@@ -72,8 +99,9 @@ def autostart(filePath):
 
 
 # 子线程要执行的代码
-def login():
-    schedule.every(5).minutes.do(auto_login.test)
+def login(self):
+    # schedule.every(5).minutes.do(auto_login.test)
+    schedule.every(5).seconds.do(auto_login.test,self)#测试
     while (1):
         schedule.run_pending()
         sleep(5)
@@ -81,6 +109,7 @@ def login():
 
 if __name__ == '__main__':
     # 下面是使用wxPython的固定用法
+    print(wx.version())
     app = wx.App()
     main_win = mainWin(None)
     main_win.Show()

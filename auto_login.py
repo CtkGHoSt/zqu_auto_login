@@ -12,28 +12,32 @@ from configparser import ConfigParser
 
 from ver_code import validation_code_recognition
 
+
+#
+#     self.config_file = "./conf.ini"
+#     self.conf = ConfigParser()
+#     self.conf.read(self.config_file, encoding='utf-8')
+#     if self.conf.get('run', 'log_level') == 'debug':
+#         self.log_level = logging.DEBUG
+#     elif self.conf.get('run', 'log_level') == 'info':
+#         self.log_level = logging.INFO
+#     elif self.conf.get('run', 'log_level') == 'warning':
+#         self.log_level = logging.WARNING
+#     else:
+#         print('log level error.')
+#         sys.exit(1)
+#     logging.basicConfig(
+#         # filename='run.log',
+#         format='[%(asctime)s] - %(levelname)s - %(module)s: %(message)s',
+#         datefmt='%Y-%m-%d %H:%M:%S',
+#         level=self.log_level,
+#         handlers=[logging.FileHandler("run.log"), logging.StreamHandler()]
+#     )
+#
+
 test_url = 'http://quan.suning.com/getSysTime.do'  # 测试连接状态url
 
-config_file = "conf.ini"
-if os.path.exists(config_file):
-    conf = ConfigParser()
-    conf.read(config_file, encoding='utf-8')
-    if conf.get('run', 'log_level') == 'debug':
-        log_level = logging.DEBUG
-    elif conf.get('run', 'log_level') == 'info':
-        log_level = logging.INFO
-    elif conf.get('run', 'log_level') == 'warning':
-        log_level = logging.WARNING
-    else:
-        print('log level error.')
-        sys.exit(1)
-    logging.basicConfig(
-        # filename='run.log',
-        format='[%(asctime)s] - %(levelname)s - %(module)s: %(message)s',
-        datefmt='%Y-%m-%d %H:%M:%S',
-        level=log_level,
-        handlers=[logging.FileHandler("run.log"), logging.StreamHandler()]
-    )
+
 
 
 def connect_wifi():
@@ -78,15 +82,17 @@ def is_campus_network():
     return 1
 
 
-def online_time():
+def online_time(self):
     now = datetime.now().strftime("%H:%M")
-    if now > conf.get('run', 'begin_time') and now < conf.get('run', 'end_time'):
+    if now > self.conf.get('run', 'begin_time') and now < self.conf.get('run', 'end_time'):
         return True
     return False
 
 
 def auto_login_1(userId, password):
     logging.info('开始局域网验证')
+    logging.info('学号：'+userId+' 密码:'+password)
+
     try:
         test_status = requests.get(test_url)  # 获取重定向连接
     except requests.exceptions.ConnectionError:
@@ -129,6 +135,8 @@ def auto_login_1(userId, password):
 
 def auto_login_2(userId, password):
     logging.info('开始电信验证')
+    logging.info('学号：'+userId+' 密码:'+password)
+
     se = requests.session()  # 新建会话
     test_status = se.get(test_url)  # 获取重定向连接
     # logging.debug('局域网验证连接 {}'.format(test_status.url))
@@ -147,7 +155,7 @@ def auto_login_2(userId, password):
     logging.debug('验证码：{}'.format(v_code))
     post_text = {
         'edubas': '119.146.99.27',
-        'eduuser': '10.72.99.58',
+        'eduuser': '10.71.98.198',
         'password1': str(b64encode(bytes(password, encoding="utf-8")), encoding="utf-8"),
         'patch': 'wifi',
         'rand': v_code,
@@ -178,8 +186,8 @@ def auto_login_2(userId, password):
     return haha.status_code
 
 
-def test():
-    if not online_time():
+def test(self):
+    if not online_time(self):
         logging.info('不在验证时间段内')
         return -1
     if is_campus_network() != 1:
@@ -187,8 +195,8 @@ def test():
     if check_wifi() == -1:
         logging.info('可以上网')
         return 0
-    userid = conf.get('user', 'userid')
-    password = conf.get('user', 'password')
+    userid = self.conf.get('user', 'userid')
+    password = self.conf.get('user', 'password')
     try:
         # 若密码长度小于8当成移动网络
         if len(password) == 6:
@@ -205,21 +213,22 @@ def test():
 
 if __name__ == '__main__':
     logging.info('开始运行')
-    logging.info('user is [{}]'.format(conf.get('user', 'userid')))
-    logging.info('password is [{}]'.format(conf.get('user', 'password')))
-    every_time = conf.getint('run', 'every_time')
-    if conf.get('run', 'time_unit') == 'minutes':
-        schedule.every(every_time).minutes.do(test)
-    elif conf.get('run', 'time_unit') == 'seconds':
-        schedule.every(every_time).seconds.do(test)
-    else:
-        logging.critical('conf文件错误')
-        sys.exit(1)
-    logging.info('每 {} {} 执行一次'.format(every_time, conf.get('run', 'time_unit')))
-    logging.info('验证时间：{} 到 {}'.format(conf.get('run', 'begin_time'), conf.get('run', 'end_time')))
-    while (1):
-        schedule.run_pending()
-        sleep(1)
+    # logging.info('user is [{}]'.format(self.conf.get('user', 'userid')))
+    # logging.info('password is [{}]'.format(self.conf.get('user', 'password')))
+    # every_time = self.conf.getint('run', 'every_time')
+    # if self.conf.get('run', 'time_unit') == 'minutes':
+    #     schedule.every(every_time).minutes.do(test)
+    # elif self.conf.get('run', 'time_unit') == 'seconds':
+    #     schedule.every(every_time).seconds.do(test)
+    # else:
+    #     logging.critical('self.conf文件错误')
+    #     sys.exit(1)
+    # logging.info('每 {} {} 执行一次'.format(every_time, self.conf.get('run', 'time_unit')))
+    # logging.info('验证时间：{} 到 {}'.format(self.conf.get('run', 'begin_time'), self.conf.get('run', 'end_time')))
+    # while (1):
+    #     schedule.run_pending()
+    #     sleep(1)
+
 
 
 
