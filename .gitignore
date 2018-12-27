@@ -114,4 +114,4 @@ dmypy.json
 .pyre/
 
 .idea/
-/conf.ini
+conf.ini
