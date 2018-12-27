@@ -11,7 +11,7 @@
 
 ---
 ### 说明
-需要修改conf.ini文件需要运行一次zqu_auto_login.exe文件
+若需要修改conf.ini文件,需要运行一次zqu_auto_login.exe文件\
 conf.ini ：
 ```
 [user]
