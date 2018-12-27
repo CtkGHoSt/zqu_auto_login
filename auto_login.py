@@ -135,6 +135,7 @@ def auto_login_1(userId, password):
 
 
 def auto_login_2(userId, password):
+    global url_parse_dict
     logging.info('开始电信验证')
     logging.info('学号：'+userId+' 密码:'+password)
 
@@ -166,7 +167,8 @@ def auto_login_2(userId, password):
         url_parse_dict = parse.parse_qs(url_parse.query)
     except UnboundLocalError:
         logging.error('auto login 2 - UnboundLocalError')
-        
+    except KeyError:
+        logging.error('auto login 2 - KeyError')
         
     # 获取验证码图片
     v_code_image = open('test.jpg', 'wb+')
@@ -179,15 +181,23 @@ def auto_login_2(userId, password):
     logging.debug('验证码：{}'.format(v_code))
     
     sleep(2)
-    
+
     post_text = {
-        'edubas': url_parse_dict['wlanacip'],
-        'eduuser': url_parse_dict['wlanuserip'],
+        'edubas': '119.146.99.27',
+        'eduuser': '10.71.98.198',
         'password1': str(b64encode(bytes(password, encoding="utf-8")), encoding="utf-8"),
         'patch': 'wifi',
         'rand': v_code,
         'userName1': userId,
     }
+    # post_text = {
+    #     'edubas': url_parse_dict['wlanacip'],
+    #     'eduuser': url_parse_dict['wlanuserip'],
+    #     'password1': str(b64encode(bytes(password, encoding="utf-8")), encoding="utf-8"),
+    #     'patch': 'wifi',
+    #     'rand': v_code,
+    #     'userName1': userId,
+    # }
 
     login_http = 'http://enet.10000.gd.cn:10001/login.do'
 
@@ -205,16 +215,14 @@ def test(self):
     if check_wifi() == -1:
         logging.info('可以上网')
         return 0
-    userid = self.conf.get('user', 'userid')
-    password = self.conf.get('user', 'password')
     try:
         # 若密码长度小于8当成移动网络
-        if len(password) == 6:
-            auto_login_1(userid, password)
-        elif len(password) == 8:
-            auto_login_1(userid, password[2:])
+        if len(self.password) == 6:
+            auto_login_1(self.userid, self.password)
+        elif len(self.password) == 8:
+            auto_login_1(self.userid, self.password[2:])
             sleep(2)
-            auto_login_2(userid, password)
+            auto_login_2(self.userid, self.password)
         else:
             logging.error("密码错误")
 
