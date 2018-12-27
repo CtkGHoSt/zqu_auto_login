@@ -48,9 +48,25 @@ class mainWin(Frame.MyFrame):
 
 # 写入配置文件
 def writeConfig(self):
-    self.conf.set('user', 'userid', self.userid)
-    self.conf.set('user', 'password', self.password)
-    self.conf.set('user', 'check', str(self.check))
+    if not os.path.exists(self.config_file):
+        date = "[user]\n" \
+               "userid =" + self.userid + "\n" \
+               "password =" + self.password + "\n" \
+               "check =" + str(self.check) + "\n\n" \
+               "[run]\n" \
+               "time_unit = minutes\n" \
+               "every_time = 5\n" \
+               "begin_time = 07:00\n" \
+               "end_time = 23:59\n" \
+               "log_level = debug"
+        f = open(self.config_file, 'w')
+        f.write(date)
+        f.close()
+    else:
+        self.conf.set('user', 'userid', self.userid)
+        self.conf.set('user', 'password', self.password)
+        self.conf.set('user', 'check', str(self.check))
+
 
 def readConfig(self):
     self.conf.read(self.config_file, encoding='utf-8')
