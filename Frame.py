@@ -1,5 +1,5 @@
 import wx  # 引入wx模块<br>
-from os import getcwd,path
+import os
 from configparser import ConfigParser
 
 class MyFrame(wx.Frame):
@@ -27,11 +27,11 @@ class MyFrame(wx.Frame):
         self.Layout()
         self.Centre(wx.BOTH)
 
-        file = getcwd()+"/conf.ini"
+        file = "conf.ini"
         conf = ConfigParser()
         conf.read(file , encoding='utf-8')
         # 获取数据
-        if path.exists(file):
+        if os.path.exists(file):
             userid = conf.get('user', 'userid')
             password = conf.get('user', 'password')
             check=conf.get('user','check')
