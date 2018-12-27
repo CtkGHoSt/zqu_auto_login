@@ -18,7 +18,7 @@ class MyFrame(wx.Frame):
         gSizer.Add(self.m_staticText1, 0, wx.ALL, 5)
         self.password = wx.TextCtrl(self, wx.ID_ANY, u"xxxxxxxx", wx.DefaultPosition, wx.DefaultSize, 0)
         gSizer.Add(self.password, 0, wx.ALL, 5)
-        self.check_start = wx.CheckBox(self, wx.ID_ANY, u"开机自启(无效)", wx.DefaultPosition, wx.DefaultSize, 0)
+        self.check_start = wx.CheckBox(self, wx.ID_ANY, u"开机自启", wx.DefaultPosition, wx.DefaultSize, 0)
         gSizer.Add(self.check_start, 0, wx.ALL, 5)
         self.btn_open = wx.Button(self, wx.ID_ANY, u"开启", wx.DefaultPosition, wx.DefaultSize, 0)
         gSizer.Add(self.btn_open, 0, wx.ALL, 5)

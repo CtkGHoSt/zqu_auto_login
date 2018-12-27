@@ -10,7 +10,6 @@ from configparser import ConfigParser
 import logging
 import sys
 
-
 class TestThread(threading.Thread):
     def __init__(self,userid, password, check):  # 线程实例化时立即启动
         threading.Thread.__init__(self)
@@ -26,6 +25,7 @@ class TestThread(threading.Thread):
     def run(self):  # 线程执行的代码
         writeConfig(self)#写入数据到配置文件
         readConfig(self)
+        autostart(self)
         logging.info('学号：' + self.userid + ' 密码:' + self.password)
         login(self)
 
@@ -96,11 +96,19 @@ def hideFile(filePath):
         os.system(cmd)
 
 # 开机自启
-def autostart(filePath):
+def autostart(self):
+    name = 'AutoLogin'  # 要添加的项值名称
+    filePath = os.path.realpath(__file__)  # 要添加的exe路径
     if 'Windows' in platform.system():
-        cmd = 'reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run" /v winrar /t reg_sz /d "' + filePath + '" /f '
-        os.system(cmd)
-
+        try:
+            if self.check:
+                cmd = 'reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run" /v ' + name + ' /t reg_sz /d "' + filePath + '" /f '
+                os.system(cmd)
+            else:
+                cmd = 'reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run" /v ' + name + ' /f '
+                os.system(cmd)
+        except:
+            logging.error('修改开机项失败')
 
 # 子线程要执行的代码
 def login(self):
