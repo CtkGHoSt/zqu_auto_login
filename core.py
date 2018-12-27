@@ -10,7 +10,6 @@ from configparser import ConfigParser
 import logging
 import sys
 
-
 class TestThread(threading.Thread):
     def __init__(self,userid, password, check):  # 线程实例化时立即启动
         threading.Thread.__init__(self)
@@ -20,11 +19,13 @@ class TestThread(threading.Thread):
         self.config_file = "conf.ini"
         self.conf = ConfigParser()
         self.log_level = logging.INFO
-
+        self.begin_time = ""
+        self.end_time = ""
 
     def run(self):  # 线程执行的代码
         writeConfig(self)#写入数据到配置文件
         readConfig(self)
+        autostart(self)
         logging.info('学号：' + self.userid + ' 密码:' + self.password)
         login(self)
 
@@ -54,6 +55,10 @@ def writeConfig(self):
 def readConfig(self):
     self.conf.read(self.config_file, encoding='utf-8')
 
+    #获取开始时间和结束时间
+    self.begin_time = self.conf.get('run', 'begin_time')
+    self.end_time = self.conf.get('run', 'end_time')
+
     if self.conf.get('run', 'log_level') == 'debug':
         self.log_level = logging.DEBUG
     elif self.conf.get('run', 'log_level') == 'info':
@@ -78,11 +83,19 @@ def hideFile(filePath):
         os.system(cmd)
 
 # 开机自启
-def autostart(filePath):
+def autostart(self):
+    name = 'AutoLogin'  # 要添加的项值名称
+    filePath = os.path.realpath(__file__)  # 要添加的exe路径
     if 'Windows' in platform.system():
-        cmd = 'reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run" /v winrar /t reg_sz /d "' + filePath + '" /f '
-        os.system(cmd)
-
+        try:
+            if self.check:
+                cmd = 'reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run" /v ' + name + ' /t reg_sz /d "' + filePath + '" /f '
+                os.system(cmd)
+            else:
+                cmd = 'reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run" /v ' + name + ' /f '
+                os.system(cmd)
+        except:
+            logging.error('修改开机项失败')
 
 # 子线程要执行的代码
 def login(self):
