@@ -161,14 +161,13 @@ def auto_login_2(userId, password):
     }
     
     try:
-        logging.debug(test_url.url)
         http_headers['Referer'] = test_status.url
         url_parse = parse.urlparse(test_status.url) # 获取链接参数
         url_parse_dict = parse.parse_qs(url_parse.query)
     except UnboundLocalError:
         logging.error('auto login 2 - UnboundLocalError')
     except KeyError:
-        logging.error('auto login 2 - KeyError')
+        logging.error('auto login 2 - KeyError 重定向链接{}'.format(test_status.url))
         
         
     # 获取验证码图片
