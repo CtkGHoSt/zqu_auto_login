@@ -44,17 +44,18 @@ todo：
 …
 
 > v0.1.1 更新
-修复无法开机自启
+修复无法开机自启\
 关闭dos调试窗口
 
 > v0.1.0 更新
-更新了windows ui
+更新了windows ui\
 修复了无数个bug
 
 > v0.0.3 更新
-修复了auto login 1获取重定向连接异常
+修复了auto login \
+1获取重定向连接异常
 
 > v0.0.2 更新
-更新log输出
+更新log输出\
 修复无数个bug
 
