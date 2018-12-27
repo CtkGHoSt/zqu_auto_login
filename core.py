@@ -63,6 +63,7 @@ def writeConfig(self):
         f.write(date)
         f.close()
     else:
+        self.conf.read(self.config_file, encoding='utf-8')
         self.conf.set('user', 'userid', self.userid)
         self.conf.set('user', 'password', self.password)
         self.conf.set('user', 'check', str(self.check))

@@ -37,7 +37,7 @@ class MyFrame(wx.Frame):
             check=conf.get('user','check')
             self.userid.SetValue(userid)
             self.password.SetValue(password)
-            if check:
+            if check=="True":
                 self.check_start.SetValue(True)
 
         # 绑定按钮的单击事件
