@@ -18,7 +18,6 @@ class TestThread(threading.Thread):
         self.check = check
         self.config_file = "conf.ini"
         self.conf = ConfigParser()
-        self.conf.read(self.config_file, encoding='utf-8')
         self.log_level = logging.INFO
         self.begin_time = ""
         self.end_time = ""
@@ -70,8 +69,7 @@ def writeConfig(self):
 
 
 def readConfig(self):
-    
-
+    self.conf.read(self.config_file, encoding='utf-8')
     #获取开始时间和结束时间
     self.begin_time = self.conf.get('run', 'begin_time')
     self.end_time = self.conf.get('run', 'end_time')
