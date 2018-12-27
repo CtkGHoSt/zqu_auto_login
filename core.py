@@ -20,7 +20,8 @@ class TestThread(threading.Thread):
         self.config_file = "conf.ini"
         self.conf = ConfigParser()
         self.log_level = logging.INFO
-
+        self.begin_time = ""
+        self.end_time = ""
 
     def run(self):  # 线程执行的代码
         writeConfig(self)#写入数据到配置文件
@@ -66,6 +67,10 @@ def writeConfig(self):
 
 def readConfig(self):
     self.conf.read(self.config_file, encoding='utf-8')
+
+    #获取开始时间和结束时间
+    self.begin_time = self.conf.get('run', 'begin_time')
+    self.end_time = self.conf.get('run', 'end_time')
 
     if self.conf.get('run', 'log_level') == 'debug':
         self.log_level = logging.DEBUG

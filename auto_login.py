@@ -14,39 +14,34 @@ from urllib import parse
 from ver_code import validation_code_recognition
 
 
-#   def logging_config_init()
-#     self.config_file = "./conf.ini"
-#     self.conf = ConfigParser()
-#     self.conf.read(self.config_file, encoding='utf-8')
-#     if self.conf.get('run', 'log_level') == 'debug':
-#         self.log_level = logging.DEBUG
-#     elif self.conf.get('run', 'log_level') == 'info':
-#         self.log_level = logging.INFO
-#     elif self.conf.get('run', 'log_level') == 'warning':
-#         self.log_level = logging.WARNING
-#     else:
-#         print('log level error.')
-#         sys.exit(1)
-#     logging.basicConfig(
-#         # filename='run.log',
-#         format='[%(asctime)s] - %(levelname)s - %(module)s: %(message)s',
-#         datefmt='%Y-%m-%d %H:%M:%S',
-#         level=self.log_level,
-#         handlers=[logging.FileHandler("run.log"), logging.StreamHandler()]
-#     )
-#
+def logging_config_init():
+    config_file = "./conf.ini"
+    conf = ConfigParser()
+    conf.read(config_file, encoding='utf-8')
+    if conf.get('run', 'log_level') == 'debug':
+        log_level = logging.DEBUG
+    elif conf.get('run', 'log_level') == 'info':
+        log_level = logging.INFO
+    elif conf.get('run', 'log_level') == 'warning':
+        log_level = logging.WARNING
+    else:
+        print('log level error.')
+        sys.exit(1)
+    logging.basicConfig(
+        # filename='run.log',
+        format='[%(asctime)s] - %(levelname)s - %(module)s: %(message)s',
+        datefmt='%Y-%m-%d %H:%M:%S',
+        level=log_level,
+        handlers=[logging.FileHandler("run.log"), logging.StreamHandler()]
+    )
 
 test_url = 'http://quan.suning.com/getSysTime.do'  # 测试连接状态url
-
-
-
 
 def connect_wifi():
     logging.warning('正在连接到学校wifi')
     backinfo = os.system('netsh wlan connect name="ZQU-WebAuth"')  # 连到学校wifi
     sleep(5)
     return backinfo
-
 
 def check_wifi():
     """
@@ -85,7 +80,8 @@ def is_campus_network():
 
 def online_time(self):
     now = datetime.now().strftime("%H:%M")
-    if now > self.conf.get('run', 'begin_time') and now < self.conf.get('run', 'end_time'):
+    # if now > self.conf.get('run', 'begin_time') and now < self.conf.get('run', 'end_time'):#旧版本
+    if self.begin_time < now < self.end_time:
         return True
     return False
 
