@@ -27,7 +27,7 @@ class TestThread(threading.Thread):
         readConfig(self)
         autostart(self)
         logging.info('学号：' + self.userid + ' 密码:' + self.password)
-        login(self)
+        loginstart(self)
 
 # 创建mainWin类并传入my_win.MyFrame
 class mainWin(Frame.MyFrame):
@@ -115,7 +115,7 @@ def autostart(self):
             logging.error('修改开机项失败')
 
 # 子线程要执行的代码
-def login(self):
+def loginstart(self):
     login.test(self)#第一次启动
     sleep(5)
     if self.conf.get('run', 'time_unit') == 'minutes':
