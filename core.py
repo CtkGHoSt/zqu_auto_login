@@ -105,7 +105,7 @@ def autostart(self):
     if 'Windows' in platform.system():
         try:
             if self.check:
-                cmd = 'reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run" /v ' + name + '/t reg_sz /d "' + filePath + '" /f '
+                cmd = 'reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run" /v ' + name + ' /t reg_sz /d "' + filePath + '" /f '
                 os.system(cmd)
             else:
                 cmd = 'reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run" /v ' + name + ' /f '
