@@ -13,28 +13,6 @@ from urllib import parse
 
 from ver_code import validation_code_recognition
 
-
-def logging_config_init():
-    config_file = "./conf.ini"
-    conf = ConfigParser()
-    conf.read(config_file, encoding='utf-8')
-    if conf.get('run', 'log_level') == 'debug':
-        log_level = logging.DEBUG
-    elif conf.get('run', 'log_level') == 'info':
-        log_level = logging.INFO
-    elif conf.get('run', 'log_level') == 'warning':
-        log_level = logging.WARNING
-    else:
-        print('log level error.')
-        sys.exit(1)
-    logging.basicConfig(
-        # filename='run.log',
-        format='[%(asctime)s] - %(levelname)s - %(module)s: %(message)s',
-        datefmt='%Y-%m-%d %H:%M:%S',
-        level=log_level,
-        handlers=[logging.FileHandler("run.log"), logging.StreamHandler()]
-    )
-
 test_url = 'http://quan.suning.com/getSysTime.do'  # 测试连接状态url
 
 def connect_wifi():
@@ -223,22 +201,6 @@ def test(self):
 
 if __name__ == '__main__':
     logging.info('开始运行')
-    # logging.info('user is [{}]'.format(self.conf.get('user', 'userid')))
-    # logging.info('password is [{}]'.format(self.conf.get('user', 'password')))
-    # every_time = self.conf.getint('run', 'every_time')
-    # if self.conf.get('run', 'time_unit') == 'minutes':
-    #     schedule.every(every_time).minutes.do(test)
-    # elif self.conf.get('run', 'time_unit') == 'seconds':
-    #     schedule.every(every_time).seconds.do(test)
-    # else:
-    #     logging.critical('self.conf文件错误')
-    #     sys.exit(1)
-    # logging.info('每 {} {} 执行一次'.format(every_time, self.conf.get('run', 'time_unit')))
-    # logging.info('验证时间：{} 到 {}'.format(self.conf.get('run', 'begin_time'), self.conf.get('run', 'end_time')))
-    # while (1):
-    #     schedule.run_pending()
-    #     sleep(1)
-
 
 
 
