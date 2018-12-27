@@ -6,6 +6,9 @@ import os
 from time import sleep
 import platform
 import threading
+from configparser import ConfigParser
+import logging
+import sys
 
 class TestThread(threading.Thread):
     def __init__(self,userid, password, check):  # 线程实例化时立即启动
@@ -13,13 +16,18 @@ class TestThread(threading.Thread):
         self.userid =userid
         self.password = password
         self.check = check
+        self.config_file = os.getcwd()+"/conf.ini"
+        self.conf = ConfigParser()
+        self.log_level = logging.INFO
+        self.begin_time = ""
+        self.end_time = ""
 
     def run(self):  # 线程执行的代码
-        print(self.userid + self.password)
-        writeConfig(self.userid,self.password,self.check)#写入数据到配置文件
-        auto_login.test()
-        sleep(5)
-        login()
+        writeConfig(self)#写入数据到配置文件
+        readConfig(self)
+        autostart(self)
+        logging.info('学号：' + self.userid + ' 密码:' + self.password)
+        login(self)
 
 # 创建mainWin类并传入my_win.MyFrame
 class mainWin(Frame.MyFrame):
@@ -39,24 +47,50 @@ class mainWin(Frame.MyFrame):
             os._exit(0)
 
 # 写入配置文件
-def writeConfig(userid,password,check):
-    config_file = "conf.ini"
-    date = "[user]\n" \
-           "userid =" + userid + "\n" \
-            "password =" + password + "\n" \
-            "check ="+ str(check) +"\n\n"\
-           "[run]\n" \
-           "time_unit = minutes\n" \
-           "every_time = 5\n" \
-           "begin_time = 07:00\n" \
-           "end_time = 23:59\n" \
-            "log_level = debug"
-    if os.path.exists(config_file):
-        os.remove(config_file)
-    f = open(config_file, 'w')
-    f.write(date)
-    f.close()
-    hideFile(config_file)
+def writeConfig(self):
+    if not os.path.exists(self.config_file):
+        date = "[user]\n" \
+               "userid = " + self.userid + "\n" \
+               "password = " + self.password + "\n" \
+               "check = " + str(self.check) + "\n\n" \
+               "[run]\n" \
+               "time_unit = minutes\n" \
+               "every_time = 5\n" \
+               "begin_time = 07:00\n" \
+               "end_time = 23:59\n" \
+               "log_level = debug"
+        f = open(self.config_file, 'w')
+        f.write(date)
+        f.close()
+    else:
+        self.conf.read(self.config_file, encoding='utf-8')
+        self.conf.set('user', 'userid', value=self.userid)
+        self.conf.set('user', 'password', self.password)
+        self.conf.set('user', 'check', str(self.check))
+        with open(self.config_file, 'w') as fw:  # 循环写入
+            self.conf.write(fw)
+
+def readConfig(self):
+    self.conf.read(self.config_file, encoding='utf-8')
+    #获取开始时间和结束时间
+    self.begin_time = self.conf.get('run', 'begin_time')
+    self.end_time = self.conf.get('run', 'end_time')
+
+    if self.conf.get('run', 'log_level') == 'debug':
+        self.log_level = logging.DEBUG
+    elif self.conf.get('run', 'log_level') == 'info':
+        self.log_level = logging.INFO
+    elif self.conf.get('run', 'log_level') == 'warning':
+        self.log_level = logging.WARNING
+    else:
+        print('log level error.')
+        sys.exit(1)
+    logging.basicConfig(
+        format='[%(asctime)s] - %(levelname)s - %(module)s: %(message)s',
+        datefmt='%Y-%m-%d %H:%M:%S',
+        level=self.log_level,
+        handlers=[logging.FileHandler("run.log"), logging.StreamHandler()]
+    )
 
 # 隐藏配置文件
 def hideFile(filePath):
@@ -65,24 +99,42 @@ def hideFile(filePath):
         os.system(cmd)
 
 # 开机自启
-def autostart(filePath):
+def autostart(self):
+    name = 'AutoLogin'  # 要添加的项值名称
+    filePath = os.path.realpath(__file__)  # 要添加的exe路径
     if 'Windows' in platform.system():
-        cmd = 'reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run" /v winrar /t reg_sz /d "' + filePath + '" /f '
-        os.system(cmd)
-
+        try:
+            if self.check:
+                cmd = 'reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run" /v ' + name + '/t reg_sz /d "' + filePath + '" /f '
+                os.system(cmd)
+            else:
+                cmd = 'reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run" /v ' + name + ' /f '
+                os.system(cmd)
+        except:
+            logging.error('修改开机项失败')
 
 # 子线程要执行的代码
-def login():
-    schedule.every(5).minutes.do(auto_login.test)
+def login(self):
+    auto_login.test(self)#第一次启动
+    sleep(5)
+    if self.conf.get('run', 'time_unit') == 'minutes':
+        schedule.every(self.conf.getint('run', 'every_time')).minutes.do(auto_login.test,self)
+    elif self.conf.get('run', 'time_unit') == 'seconds':
+        schedule.every(self.conf.getint('run', 'every_time')).seconds.do(auto_login.test,self)#测试
+    else:
+        logging.critical('conf.ini配置错误：{}'.format(
+            self.conf.getint('run', 'every_time'),
+            self.conf.get('run', 'time_unit')
+        ))
+        sys.exit(1)
     while (1):
         schedule.run_pending()
-        sleep(5)
+        sleep(1)
 
 
 if __name__ == '__main__':
     # 下面是使用wxPython的固定用法
-    app = wx.PySimpleApp()
+    app = wx.App()
     main_win = mainWin(None)
     main_win.Show()
-    print("test1")
     app.MainLoop()
