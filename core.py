@@ -101,7 +101,8 @@ def hideFile(filePath):
 # 开机自启
 def autostart(self):
     name = 'AutoLogin'  # 要添加的项值名称
-    filePath = os.path.realpath(__file__)  # 要添加的exe路径
+    # filePath = os.path.realpath(__file__)  # 测试使用
+    filePath = os.getcwd()+"\zqu_auto_login.exe"#正式版使用
     if 'Windows' in platform.system():
         try:
             if self.check:
@@ -112,6 +113,8 @@ def autostart(self):
                 os.system(cmd)
         except:
             logging.error('修改开机项失败')
+
+
 
 # 子线程要执行的代码
 def login(self):
