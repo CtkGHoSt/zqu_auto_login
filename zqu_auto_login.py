@@ -1,6 +1,6 @@
 import wx  # 引入wx模块<br>
 import Frame
-import auto_login
+import login
 import schedule
 import os
 from time import sleep
@@ -116,12 +116,12 @@ def autostart(self):
 
 # 子线程要执行的代码
 def login(self):
-    auto_login.test(self)#第一次启动
+    login.test(self)#第一次启动
     sleep(5)
     if self.conf.get('run', 'time_unit') == 'minutes':
-        schedule.every(self.conf.getint('run', 'every_time')).minutes.do(auto_login.test,self)
+        schedule.every(self.conf.getint('run', 'every_time')).minutes.do(login.test, self)
     elif self.conf.get('run', 'time_unit') == 'seconds':
-        schedule.every(self.conf.getint('run', 'every_time')).seconds.do(auto_login.test,self)#测试
+        schedule.every(self.conf.getint('run', 'every_time')).seconds.do(login.test, self)#测试
     else:
         logging.critical('conf.ini配置错误：{}'.format(
             self.conf.getint('run', 'every_time'),
