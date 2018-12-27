@@ -69,7 +69,6 @@ def readConfig(self):
         print('log level error.')
         sys.exit(1)
     logging.basicConfig(
-        # filename='run.log',
         format='[%(asctime)s] - %(levelname)s - %(module)s: %(message)s',
         datefmt='%Y-%m-%d %H:%M:%S',
         level=self.log_level,
