@@ -14,27 +14,27 @@ from urllib import parse
 from ver_code import validation_code_recognition
 
 
-def logging_config_init()
-    self.config_file = "./conf.ini"
-    self.conf = ConfigParser()
-    self.conf.read(self.config_file, encoding='utf-8')
-    if self.conf.get('run', 'log_level') == 'debug':
-        self.log_level = logging.DEBUG
-    elif self.conf.get('run', 'log_level') == 'info':
-        self.log_level = logging.INFO
-    elif self.conf.get('run', 'log_level') == 'warning':
-        self.log_level = logging.WARNING
-    else:
-        print('log level error.')
-        sys.exit(1)
-    logging.basicConfig(
-        # filename='run.log',
-        format='[%(asctime)s] - %(levelname)s - %(module)s: %(message)s',
-        datefmt='%Y-%m-%d %H:%M:%S',
-        level=self.log_level,
-        handlers=[logging.FileHandler("run.log"), logging.StreamHandler()]
-    )
-
+#   def logging_config_init()
+#     self.config_file = "./conf.ini"
+#     self.conf = ConfigParser()
+#     self.conf.read(self.config_file, encoding='utf-8')
+#     if self.conf.get('run', 'log_level') == 'debug':
+#         self.log_level = logging.DEBUG
+#     elif self.conf.get('run', 'log_level') == 'info':
+#         self.log_level = logging.INFO
+#     elif self.conf.get('run', 'log_level') == 'warning':
+#         self.log_level = logging.WARNING
+#     else:
+#         print('log level error.')
+#         sys.exit(1)
+#     logging.basicConfig(
+#         # filename='run.log',
+#         format='[%(asctime)s] - %(levelname)s - %(module)s: %(message)s',
+#         datefmt='%Y-%m-%d %H:%M:%S',
+#         level=self.log_level,
+#         handlers=[logging.FileHandler("run.log"), logging.StreamHandler()]
+#     )
+#
 
 test_url = 'http://quan.suning.com/getSysTime.do'  # 测试连接状态url
 
@@ -135,9 +135,9 @@ def auto_login_1(userId, password):
 
 
 def auto_login_2(userId, password):
-    global url_parse_dict
     logging.info('开始电信验证')
     logging.info('学号：'+userId+' 密码:'+password)
+
     se = requests.session()  # 新建会话
     test_status = se.get(test_url)  # 获取重定向连接
     # logging.debug('局域网验证连接 {}'.format(test_status.url))
@@ -178,7 +178,9 @@ def auto_login_2(userId, password):
     v_code = validation_code_recognition('./test.jpg')
     os.remove('./test.jpg')#删除验证码文件
     logging.debug('验证码：{}'.format(v_code))
+    
     sleep(2)
+    
     post_text = {
         'edubas': url_parse_dict['wlanacip'],
         'eduuser': url_parse_dict['wlanuserip'],
@@ -204,6 +206,7 @@ def test(self):
     if check_wifi() == -1:
         logging.info('可以上网')
         return 0
+
     try:
         # 若密码长度为6当成移动网络，8位电信网络
         if len(self.password) == 6:

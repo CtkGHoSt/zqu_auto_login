@@ -23,10 +23,9 @@ class TestThread(threading.Thread):
 
 
     def run(self):  # 线程执行的代码
-        logging.info('学号：' + self.userid + ' 密码:' + self.password)
         writeConfig(self)#写入数据到配置文件
         readConfig(self)
-
+        logging.info('学号：' + self.userid + ' 密码:' + self.password)
         login(self)
 
 # 创建mainWin类并传入my_win.MyFrame
@@ -67,6 +66,7 @@ def writeConfig(self):
 
 def readConfig(self):
     self.conf.read(self.config_file, encoding='utf-8')
+
     if self.conf.get('run', 'log_level') == 'debug':
         self.log_level = logging.DEBUG
     elif self.conf.get('run', 'log_level') == 'info':
@@ -99,10 +99,9 @@ def autostart(filePath):
 
 # 子线程要执行的代码
 def login(self):
-    #第一次登陆
-    auto_login.test(self)
+    auto_login.test(self)#第一次启动
     sleep(5)
-    schedule.every(5).minutes.do(auto_login.test)
+    schedule.every(5).minutes.do(auto_login.test,self)
     # schedule.every(5).seconds.do(auto_login.test,self)#测试
     while (1):
         schedule.run_pending()
