@@ -4,9 +4,10 @@
 ---
 ![](https://s1.ax1x.com/2018/12/27/FRr06H.png)     
 在可验证的时间段内每隔一段时间判断一次状态，在非联网状态下登录校园局域网和电信校园网
+> * 直接双击执行zqu_auto_login.exe
 > * ~~源码在source文件夹下~~
 > * ~~code文件夹下是用于验证码识别的图片~~
-> * 执行方式：直接打开core.exe
+> * ~~执行方式：直接打开core.exe~~
 > * ~~执行方式：当前目录下shift+右键打开cmd/powershell，执行auto_login~~
 
 ---
