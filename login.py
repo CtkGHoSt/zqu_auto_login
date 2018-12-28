@@ -1,14 +1,11 @@
 import requests
 import json
 import os
-import schedule
-import sys
-import logging
 
+import logging
 from time import sleep
 from datetime import datetime
 from base64 import b64encode
-from configparser import ConfigParser
 from urllib import parse
 
 from ver_code import validation_code_recognition
