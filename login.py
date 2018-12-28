@@ -59,10 +59,10 @@ def is_campus_network():
     try:
         requests.get('http://10.0.1.51')
     except:
-        logging.debug("false")
+        logging.debug("不在校园网false")
         return 0
     else:
-        logging.debug("success")
+        logging.debug("在校园网success")
         return 1
 
 def online_time(self):
