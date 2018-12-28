@@ -48,15 +48,22 @@ def is_campus_network():
     非局域网内返回0
     局域网内返回1
     """
-    backinfo = os.popen('ping -w 1 10.0.1.51')
-    result = backinfo.read()
-    percent_sign = result.find('%')
-    if percent_sign == -1:
-        return -1
-    elif result[percent_sign - 3:percent_sign] == '100':
+    # backinfo = os.popen('ping -w 1 10.0.1.51')
+    # result = backinfo.read()
+    # percent_sign = backinfo.find('%')
+    # if percent_sign == -1:
+    #     return -1
+    # elif result[percent_sign - 3:percent_sign] == '100':
+    #     return 0
+    # return 1
+    try:
+        requests.get('http://10.0.1.51')
+    except:
+        logging.debug("false")
         return 0
-    return 1
-
+    else:
+        logging.debug("success")
+        return 1
 
 def online_time(self):
     now = datetime.now().strftime("%H:%M")
@@ -181,12 +188,13 @@ def test(self):
     if not online_time(self):
         logging.info('不在验证时间段内')
         return -1
+
     if is_campus_network() != 1:
         connect_wifi()
+        # return 0
     if check_wifi() == -1:
         logging.info('可以上网')
         return 0
-
     try:
         # 若密码长度为6当成移动网络，8位电信网络
         if len(self.password) == 6:

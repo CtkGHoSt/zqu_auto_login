@@ -116,6 +116,7 @@ def autostart(self):
 
 # 子线程要执行的代码
 def loginstart(self):
+    logging.debug("第一次运行测试")
     login.test(self)#第一次启动
     sleep(5)
     if self.conf.get('run', 'time_unit') == 'minutes':
