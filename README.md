@@ -1,11 +1,11 @@
-# 肇庆学院电信wifi校园网自动登录 [![](https://img.shields.io/badge/release-0.1.1-brightgreen.svg)](https://github.com/CtkGHoSt/zqu_auto_login/releases)
+# 肇庆学院电信wifi校园网自动登录 [![](https://img.shields.io/badge/release-0.9.9-brightgreen.svg)](https://github.com/CtkGHoSt/zqu_auto_login/releases)
 
 ### by ctkghost
 ---
 ![](https://s1.ax1x.com/2018/12/27/FRr06H.png)     
 在可验证的时间段内每隔一段时间判断一次状态，在非联网状态下登录校园局域网和电信校园网
-> * 源码在source文件夹下
-> * code文件夹下是用于验证码识别的图片
+> * ~~源码在source文件夹下~~
+> * ~~code文件夹下是用于验证码识别的图片~~
 > * 执行方式：直接打开core.exe
 > * ~~执行方式：当前目录下shift+右键打开cmd/powershell，执行auto_login~~
 
@@ -39,10 +39,13 @@ log_level = debug
 >
 todo：
 登录失败返回页面报错信息
+远程下线
 周末的凌晨允许登录
-整合验证码识别的图片到程序中
 …
 
+> v0.9.9 更新  
+修复已知bug     
+去除code文件夹内的基准图片     
 
 > v0.1.1 更新    
 修复无法开机自启\
