@@ -1,7 +1,7 @@
 import wx  # 引入wx模块<br>
 import os
 from configparser import ConfigParser
-
+import sys
 class MyFrame(wx.Frame):
     def __init__(self, parent):
         wx.Frame.__init__(self, parent, id=wx.ID_ANY, title="肇庆学院校园网自动登录", pos=wx.DefaultPosition,
@@ -27,7 +27,7 @@ class MyFrame(wx.Frame):
         self.Layout()
         self.Centre(wx.BOTH)
 
-        file = "conf.ini"
+        file = os.path.dirname(os.path.abspath(sys.argv[0]))+"/conf.ini"
         conf = ConfigParser()
         conf.read(file , encoding='utf-8')
         # 获取数据
@@ -35,6 +35,7 @@ class MyFrame(wx.Frame):
             userid = conf.get('user', 'userid')
             password = conf.get('user', 'password')
             check=conf.get('user','check')
+
             self.userid.SetValue(userid)
             self.password.SetValue(password)
             if check=="True":

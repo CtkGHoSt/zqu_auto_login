@@ -1,6 +1,5 @@
 from PIL import Image
 import imagehash
-import os
 
 
 def validation_code_recognition(v_code_image):

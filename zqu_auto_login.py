@@ -16,7 +16,7 @@ class TestThread(threading.Thread):
         self.userid =userid
         self.password = password
         self.check = check
-        self.config_file = os.getcwd()+"/conf.ini"
+        self.config_file = os.path.dirname(os.path.abspath(sys.argv[0]))+"\conf.ini"
         self.conf = ConfigParser()
         self.log_level = logging.INFO
         self.begin_time = ""
@@ -102,7 +102,7 @@ def hideFile(filePath):
 def autostart(self):
     name = 'AutoLogin'  # 要添加的项值名称
     # filePath = os.path.realpath(__file__)  # 测试使用
-    filePath = os.getcwd()+"\zqu_auto_login.exe"#正式版使用
+    filePath = os.path.abspath(sys.argv[0])#正式版使用
     if 'Windows' in platform.system():
         try:
             if self.check:
