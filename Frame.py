@@ -46,5 +46,5 @@ class MyFrame(wx.Frame):
     def __del__(self):
         pass
 
-    def open( self, event ):
+    def open(self, event ):
         event.Skip()

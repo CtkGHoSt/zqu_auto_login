@@ -11,7 +11,7 @@
 
 ---
 ### 说明
-需要修改conf.ini文件需要运行一次zqu_auto_login.exe文件
+若需要修改conf.ini文件,需要运行一次zqu_auto_login.exe文件\
 conf.ini ：
 ```
 [user]
@@ -42,6 +42,7 @@ todo：
 周末的凌晨允许登录
 整合验证码识别的图片到程序中
 …
+
 
 > v0.1.1 更新    
 修复无法开机自启\

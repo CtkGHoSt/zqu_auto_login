@@ -1,6 +1,6 @@
 import wx  # 引入wx模块<br>
 import Frame
-import auto_login
+import login
 import schedule
 import os
 from time import sleep
@@ -27,7 +27,7 @@ class TestThread(threading.Thread):
         readConfig(self)
         autostart(self)
         logging.info('学号：' + self.userid + ' 密码:' + self.password)
-        login(self)
+        loginstart(self)
 
 # 创建mainWin类并传入my_win.MyFrame
 class mainWin(Frame.MyFrame):
@@ -101,7 +101,8 @@ def hideFile(filePath):
 # 开机自启
 def autostart(self):
     name = 'AutoLogin'  # 要添加的项值名称
-    filePath = os.path.realpath(__file__)  # 要添加的exe路径
+    # filePath = os.path.realpath(__file__)  # 测试使用
+    filePath = os.getcwd()+"\zqu_auto_login.exe"#正式版使用
     if 'Windows' in platform.system():
         try:
             if self.check:
@@ -114,13 +115,14 @@ def autostart(self):
             logging.error('修改开机项失败')
 
 # 子线程要执行的代码
-def login(self):
-    auto_login.test(self)#第一次启动
+def loginstart(self):
+    logging.debug("第一次运行测试")
+    login.test(self)#第一次启动
     sleep(5)
     if self.conf.get('run', 'time_unit') == 'minutes':
-        schedule.every(self.conf.getint('run', 'every_time')).minutes.do(auto_login.test,self)
+        schedule.every(self.conf.getint('run', 'every_time')).minutes.do(login.test, self)
     elif self.conf.get('run', 'time_unit') == 'seconds':
-        schedule.every(self.conf.getint('run', 'every_time')).seconds.do(auto_login.test,self)#测试
+        schedule.every(self.conf.getint('run', 'every_time')).seconds.do(login.test, self)#测试
     else:
         logging.critical('conf.ini配置错误：{}'.format(
             self.conf.getint('run', 'every_time'),
