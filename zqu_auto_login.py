@@ -10,13 +10,17 @@ from configparser import ConfigParser
 import logging
 import sys
 
+
+location = os.path.dirname(os.path.abspath(sys.argv[0]))
+
+
 class TestThread(threading.Thread):
     def __init__(self,userid, password, check):  # 线程实例化时立即启动
         threading.Thread.__init__(self)
         self.userid =userid
         self.password = password
         self.check = check
-        self.config_file = os.path.dirname(os.path.abspath(sys.argv[0]))+"\conf.ini"
+        self.config_file = location+"\conf.ini"
         self.conf = ConfigParser()
         self.log_level = logging.INFO
         self.begin_time = ""
@@ -89,7 +93,7 @@ def readConfig(self):
         format='[%(asctime)s] - %(levelname)s - %(module)s: %(message)s',
         datefmt='%Y-%m-%d %H:%M:%S',
         level=self.log_level,
-        handlers=[logging.FileHandler("run.log"), logging.StreamHandler()]
+        handlers=[logging.FileHandler(location+"\\run.log"), logging.StreamHandler()]
     )
 
 # 隐藏配置文件

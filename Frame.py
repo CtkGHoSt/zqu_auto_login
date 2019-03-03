@@ -5,8 +5,12 @@ import sys
 class MyFrame(wx.Frame):
     def __init__(self, parent):
         wx.Frame.__init__(self, parent, id=wx.ID_ANY, title="肇庆学院校园网自动登录", pos=wx.DefaultPosition,
-                          size=wx.Size(320, 174), style=wx.DEFAULT_FRAME_STYLE | wx.TAB_TRAVERSAL)
+                          size=wx.Size(320, 174),
+                          style=wx.DEFAULT_FRAME_STYLE |
+                                wx.TAB_TRAVERSAL)
         self.SetSizeHints(wx.DefaultSize, wx.DefaultSize)
+        self.SetMaxSize((320, 174))#固定窗口
+        self.SetMinSize((320, 174))
         gSizer = wx.GridSizer(0, 2, 0, 0)
         self.m_staticText2 = wx.StaticText(self, wx.ID_ANY, u"学号", wx.DefaultPosition, wx.DefaultSize, 0)
         self.m_staticText2.Wrap(-1)
@@ -27,11 +31,13 @@ class MyFrame(wx.Frame):
         self.Layout()
         self.Centre(wx.BOTH)
 
-        file = os.path.dirname(os.path.abspath(sys.argv[0]))+"/conf.ini"
+
+        
+        self.config_file = os.path.dirname(os.path.abspath(sys.argv[0]))+"/conf.ini"
         conf = ConfigParser()
-        conf.read(file , encoding='utf-8')
+        conf.read(self.config_file , encoding='utf-8')
         # 获取数据
-        if os.path.exists(file):
+        if os.path.exists(self.config_file):
             userid = conf.get('user', 'userid')
             password = conf.get('user', 'password')
             check=conf.get('user','check')
