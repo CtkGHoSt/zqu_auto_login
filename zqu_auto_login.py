@@ -13,7 +13,7 @@ import sys
 location = os.path.dirname(os.path.abspath(sys.argv[0]))
 
 
-class TestThread(threading.Thread):
+class MainThread(threading.Thread):
     def __init__(self, userid, password, check):  # 线程实例化时立即启动
         threading.Thread.__init__(self)
         self.userid = userid
@@ -45,7 +45,7 @@ class mainWin(Frame.MyFrame):
         if self.btn_open.GetLabel() == "开启":
             self.btn_open.SetLabel("关闭")
             userid, password, check = main_win.GetValue(self)
-            thread = TestThread(userid, password, check)
+            thread = MainThread(userid, password, check)
             thread.start()
         else:
             os._exit(0)
