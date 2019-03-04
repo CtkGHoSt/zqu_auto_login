@@ -108,7 +108,11 @@ def hideFile(filePath):
 
 # 开机自启
 def autostart(self):
-    name = 'AutoLogin'  # 要添加的项值名称
+    #######删除历史使用#######
+    cmd = 'reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run" /v AutoLogin /f '
+    os.system(cmd)
+    #########################
+    name = 'AutoLogin_ZQU'  # 要添加的项值名称
     # filePath = os.path.realpath(__file__)  # 测试使用
     filePath = os.path.abspath(sys.argv[0])  # 正式版使用
     if 'Windows' in platform.system():

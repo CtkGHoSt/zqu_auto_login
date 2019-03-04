@@ -54,10 +54,10 @@ def is_campus_network():
     try:
         requests.get('http://10.0.1.51')
     except:
-        logging.debug("不在校园网false")
+        logging.debug("不在校园网")
         return 0
     else:
-        logging.debug("在校园网success")
+        logging.debug("在校园网")
         return 1
 
 def online_time(self):
@@ -141,7 +141,7 @@ def auto_login_2(userId, password):
     }
     
     url_parse_dict = dict()
-    
+
     try:
         http_headers['Referer'] = test_status.url
         url_parse = parse.urlparse(test_status.url) # 获取链接参数
@@ -154,6 +154,7 @@ def auto_login_2(userId, password):
     # 获取验证码图片
     v_code_image = open('test.jpg', 'wb+')
     code_url = 'http://enet.10000.gd.cn:10001/common/image.jsp'
+    # print(se.get(code_url, cookies=login_2.cookies).content)
     v_code_image.write(se.get(code_url, cookies=login_2.cookies).content)
     v_code_image.close()
     # 验证码识别

@@ -20,6 +20,7 @@ def validation_code_recognition(v_code_image):
         (46, y, 46+w, y+h),
     )
     v_code = Image.open(v_code_image)
+    # print(v_code)
     # 基准图片
     # image_file = ('./code/'+name for root, dirs, files in os.walk('./code') for name in files)
     # 基准图片hash
