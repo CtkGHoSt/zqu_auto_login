@@ -15,25 +15,17 @@
 conf.ini ：
 ```
 [user]
-userid = 学号
-password = 6位密码或8位密码
+userid = 12位学号
+password = 移动输入6位密码或电信8位密码
 
 [run]
-time_unit = 每次间隔的时间单位 （minutes/seconds）
-every_time = 每次间隔时间
-begin_time = 允许登录时间
-end_time = 不允许登录时间
-log_level = 日志级别输出 （debug/info/warning）
-```
-exm：
-```
-[run]
-time_unit = minutes
-every_time = 10
-begin_time = 07:00
-end_time = 23:59
-log_level = debug
+time_unit = minutes 每次间隔的时间单位 （minutes/seconds）
+every_time = 10 每次间隔时间
+begin_time = 07:00 允许登录时间
+end_time = 23:59 不允许登录时间
+log_level = debug 日志级别输出 （debug/info/warning）
 # 早上7点到晚上23点59分内，每隔10分钟执行 判断是否需要登录校园网操作
+
 ```
 
 >
@@ -43,6 +35,8 @@ todo：
 整合验证码识别的图片到程序中
 …
 
+> v1.0.1 更新    
+添加最小化任务栏模式\
 
 > v0.1.1 更新    
 修复无法开机自启\

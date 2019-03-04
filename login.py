@@ -6,7 +6,6 @@ from time import sleep
 from datetime import datetime
 from base64 import b64encode
 from urllib import parse
-
 from ver_code import validation_code_recognition
 
 test_url = 'http://quan.suning.com/getSysTime.do'  # 测试连接状态url
