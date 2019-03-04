@@ -1,17 +1,18 @@
-# 肇庆学院电信wifi校园网自动登录 [![](https://img.shields.io/badge/release-0.1.1-brightgreen.svg)](https://github.com/CtkGHoSt/zqu_auto_login/releases)
+# 肇庆学院电信wifi校园网自动登录 [![](https://img.shields.io/badge/release-1.0.1-brightgreen.svg)](https://github.com/CtkGHoSt/zqu_auto_login/releases)
 
-### by ctkghost
+### by ctkghost chiihero
 ---
 ![](https://s1.ax1x.com/2018/12/27/FRr06H.png)     
 在可验证的时间段内每隔一段时间判断一次状态，在非联网状态下登录校园局域网和电信校园网
-> * 源码在source文件夹下
-> * code文件夹下是用于验证码识别的图片
-> * 执行方式：直接打开core.exe
+> * 直接双击执行zqu_auto_login.exe
+> * ~~源码在source文件夹下~~
+> * ~~code文件夹下是用于验证码识别的图片~~
 > * ~~执行方式：当前目录下shift+右键打开cmd/powershell，执行auto_login~~
 
 ---
 ### 说明
-若需要修改conf.ini文件,需要运行一次zqu_auto_login.exe文件\
+文件偏大原因在于用python打包运行环境而成，运行后占用资源非常小\
+若需要修 改conf.ini文件,需要运行一次zqu_auto_login.exe文件\
 conf.ini ：
 ```
 [user]
@@ -36,7 +37,11 @@ todo：
 …
 
 > v1.0.1 更新    
-添加最小化任务栏模式\
+添加最小化任务栏模式
+
+> v0.9.9 更新  
+修复已知bug\
+去除code文件夹内的基准图片
 
 > v0.1.1 更新    
 修复无法开机自启\
