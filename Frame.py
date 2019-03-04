@@ -3,9 +3,8 @@ import os
 from configparser import ConfigParser
 import sys
 import wx.adv
-
+from ico import school_ico
 TITLE = "肇庆学院校园网自动登录"
-ICON = "icon.ico"  # 图标地址
 
 class MyTaskBarIcon(wx.adv.TaskBarIcon):
     ID_EXIT = wx.NewId()  # 菜单选项“退出”的ID
@@ -14,15 +13,15 @@ class MyTaskBarIcon(wx.adv.TaskBarIcon):
     def __init__(self,frame):
         wx.adv.TaskBarIcon.__init__(self)
         self.frame = frame
-        # self.TITLE = "肇庆学院校园网自动登录"
-        self.SetIcon(wx.Icon(ICON), TITLE)  # 设置图标和标题
+        self.SetIcon(wx.Icon(school_ico.GetIcon()), TITLE)  # 设置图标和标题
         self.Bind(wx.EVT_MENU, self.onExit, id=self.ID_EXIT)  # 绑定“退出”选项的点击事件
         self.Bind(wx.EVT_MENU, self.onShow, id=self.ID_SHOW_WEB)  # 绑定“显示页面”选项的点击事件
-        # self.Bind(wx.EVT_COMMAND_LEFT_DCLICK, self.OnTaskBarLeftDClick)  # 绑定“显示页面”选项的点击事件
+        self.Bind(wx.adv.EVT_TASKBAR_LEFT_DCLICK, self.OnTaskBarLeftDClick)  # 任务栏单击左键的点击事件
 
     # “退出”选项的事件处理器
     def onExit(self, event):
         wx.Exit()
+        self.Destroy()
 
     # “显示页面”选项的事件处理器
     def onShow(self, event):
@@ -31,12 +30,11 @@ class MyTaskBarIcon(wx.adv.TaskBarIcon):
 
     # 双击显示选项的事件处理器
     def OnTaskBarLeftDClick(self, event):
-        pass
-        # if self.frame.IsIconized():
-        #     self.frame.Iconize(False)
-        # if not self.frame.IsShown():
-        #     self.frame.Show(True)
-        # self.frame.Raise()
+        if self.frame.IsIconized():
+            self.frame.Iconize(False)
+        if not self.frame.IsShown():
+            self.frame.Show(True)
+        self.frame.Raise()
 
     # 创建菜单选项
     def CreatePopupMenu(self):
@@ -53,6 +51,7 @@ class MyFrame(wx.Frame):
                           size=wx.Size(320, 174),
                           style=wx.DEFAULT_FRAME_STYLE |
                                 wx.TAB_TRAVERSAL)
+        self.SetIcon(wx.Icon(school_ico.GetIcon()))  # 设置图标
         self.SetSizeHints(wx.DefaultSize, wx.DefaultSize)
         self.taskBarIcon=MyTaskBarIcon(self)#显示系统托盘图标
         self.SetMaxSize((320, 174))  # 固定窗口
@@ -94,17 +93,17 @@ class MyFrame(wx.Frame):
 
             # 绑定按钮的单击事件
         self.Bind(wx.EVT_BUTTON, self.open, self.btn_open)
-        self.Bind(wx.EVT_ICONIZE, self.OnIconfiy) # 窗口最小化时，调用OnIconfiy,注意Wx窗体上的最小化按钮，触发的事件是 wx.EVT_ICONIZE,而根本就没有定义什么wx.EVT_MINIMIZE,但是最大化，有个wx.EVT_MAXIMIZE。
-        self.Bind(wx.EVT_CLOSE, self.OnClose)
+        self.Bind(wx.EVT_ICONIZE, self.OnHide) # 窗口最小化时，调用OnHide,注意Wx窗体上的最小化按钮，触发的事件是 wx.EVT_ICONIZE,而根本就没有定义什么wx.EVT_MINIMIZE,但是最大化，有个wx.EVT_MAXIMIZE。
+        self.Bind(wx.EVT_CLOSE, self.onExit)
 
     def open(self, event):
         event.Skip()
 
-    def OnIconfiy(self, event):
+    def OnHide(self, event):
         self.Hide()
         self.Iconize(False)
 
-    def OnClose(self, event):
+    def onExit(self, event):
         self.taskBarIcon.Destroy()
         self.Destroy()
 
