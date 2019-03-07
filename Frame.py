@@ -40,7 +40,7 @@ class MyTaskBarIcon(wx.adv.TaskBarIcon):
     def CreatePopupMenu(self):
         menu = wx.Menu()
         menu.Append(self.ID_SHOW_WEB, '进入程序')
-        menu.Append(self.ID_SHOW_WEB,'版本1.01')
+        menu.Append(self.ID_SHOW_WEB,'版本1.02')
         menu.Append(self.ID_EXIT, '退出')
         return menu
 
