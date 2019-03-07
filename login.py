@@ -69,7 +69,7 @@ def online_time(self):
 
 def auto_login_1(self, password):
     self.logger.info('开始局域网验证')
-    self.logger.info('学号：'+self.userId+' 密码:'+password)
+    self.logger.info('学号：'+self.userid+' 密码:'+password)
 
     try:
         test_status = requests.get(test_url)  # 获取重定向连接
@@ -104,7 +104,7 @@ def auto_login_1(self, password):
         url=login_url,
         headers=http_headers,
         data={
-            'userId': self.userId,
+            'userId': self.userid,
             'password': password,
             'queryString': queryString
         }
@@ -114,7 +114,7 @@ def auto_login_1(self, password):
 
 def auto_login_2(self, password):
     self.logger.info('开始电信验证')
-    self.logger.info('学号：'+self.userId+' 密码:'+password)
+    self.logger.info('学号：'+self.userid+' 密码:'+password)
 
     se = requests.session()  # 新建会话
     test_status = se.get(test_url)  # 获取重定向连接
@@ -170,7 +170,8 @@ def auto_login_2(self, password):
         'password1': str(b64encode(bytes(password, encoding="utf-8")), encoding="utf-8"),
         'patch': 'wifi',
         'rand': v_code,
-        'userName1': self.userId,
+        'userName1': self.userid,
+
     }
 
     login_http = 'http://enet.10000.gd.cn:10001/login.do'
