@@ -10,24 +10,28 @@ from configparser import ConfigParser
 import logging
 import sys
 
-class TestThread(threading.Thread):
-    def __init__(self,userid, password, check):  # 线程实例化时立即启动
+location = os.path.dirname(os.path.abspath(sys.argv[0]))
+
+
+class MainThread(threading.Thread):
+    def __init__(self, userid, password, check):  # 线程实例化时立即启动
         threading.Thread.__init__(self)
-        self.userid =userid
+        self.userid = userid
         self.password = password
         self.check = check
-        self.config_file = os.getcwd()+"/conf.ini"
+        self.config_file = location + "\conf.ini"
         self.conf = ConfigParser()
         self.log_level = logging.INFO
         self.begin_time = ""
         self.end_time = ""
 
     def run(self):  # 线程执行的代码
-        writeConfig(self)#写入数据到配置文件
+        writeConfig(self)  # 写入数据到配置文件
         readConfig(self)
         autostart(self)
         logging.info('学号：' + self.userid + ' 密码:' + self.password)
         loginstart(self)
+
 
 # 创建mainWin类并传入my_win.MyFrame
 class mainWin(Frame.MyFrame):
@@ -41,10 +45,11 @@ class mainWin(Frame.MyFrame):
         if self.btn_open.GetLabel() == "开启":
             self.btn_open.SetLabel("关闭")
             userid, password, check = main_win.GetValue(self)
-            thread = TestThread(userid, password, check)
+            thread = MainThread(userid, password, check)
             thread.start()
         else:
             os._exit(0)
+
 
 # 写入配置文件
 def writeConfig(self):
@@ -70,9 +75,10 @@ def writeConfig(self):
         with open(self.config_file, 'w') as fw:  # 循环写入
             self.conf.write(fw)
 
+
 def readConfig(self):
     self.conf.read(self.config_file, encoding='utf-8')
-    #获取开始时间和结束时间
+    # 获取开始时间和结束时间
     self.begin_time = self.conf.get('run', 'begin_time')
     self.end_time = self.conf.get('run', 'end_time')
 
@@ -89,8 +95,9 @@ def readConfig(self):
         format='[%(asctime)s] - %(levelname)s - %(module)s: %(message)s',
         datefmt='%Y-%m-%d %H:%M:%S',
         level=self.log_level,
-        handlers=[logging.FileHandler("run.log"), logging.StreamHandler()]
+        handlers=[logging.FileHandler(location + "\\run.log"), logging.StreamHandler()]
     )
+
 
 # 隐藏配置文件
 def hideFile(filePath):
@@ -98,11 +105,16 @@ def hideFile(filePath):
         cmd = 'attrib +h "' + filePath + '"'
         os.system(cmd)
 
+
 # 开机自启
 def autostart(self):
-    name = 'AutoLogin'  # 要添加的项值名称
+    #######删除历史使用#######
+    cmd = 'reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run" /v AutoLogin /f '
+    os.system(cmd)
+    #########################
+    name = 'AutoLogin_ZQU'  # 要添加的项值名称
     # filePath = os.path.realpath(__file__)  # 测试使用
-    filePath = os.getcwd()+"\zqu_auto_login.exe"#正式版使用
+    filePath = os.path.abspath(sys.argv[0])  # 正式版使用
     if 'Windows' in platform.system():
         try:
             if self.check:
@@ -114,22 +126,23 @@ def autostart(self):
         except:
             logging.error('修改开机项失败')
 
+
 # 子线程要执行的代码
 def loginstart(self):
     logging.debug("第一次运行测试")
-    login.test(self)#第一次启动
+    login.test(self)  # 第一次启动
     sleep(5)
     if self.conf.get('run', 'time_unit') == 'minutes':
         schedule.every(self.conf.getint('run', 'every_time')).minutes.do(login.test, self)
     elif self.conf.get('run', 'time_unit') == 'seconds':
-        schedule.every(self.conf.getint('run', 'every_time')).seconds.do(login.test, self)#测试
+        schedule.every(self.conf.getint('run', 'every_time')).seconds.do(login.test, self)  # 测试
     else:
         logging.critical('conf.ini配置错误：{}'.format(
             self.conf.getint('run', 'every_time'),
             self.conf.get('run', 'time_unit')
         ))
         sys.exit(1)
-    while (1):
+    while 1:
         schedule.run_pending()
         sleep(1)
 
