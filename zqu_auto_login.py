@@ -99,7 +99,7 @@ def initLog():
     """
     log日志，按时间分割，清理过时日志
     """
-    run_log = location + "\\log\\run"
+    run_log = location + "\\log\\run.log"
     logger.setLevel(log_level)
     format = "[%(asctime)s] - %(levelname)s - %(module)s: %(message)s"
     """
