@@ -117,11 +117,14 @@ def initLog():
     logger.addHandler(handler)
     # 既输出到文件，又打印到terminal
     console = logging.StreamHandler()
-    console.setLevel(logging.INFO)
+    console.setLevel(log_level)
     formatter = logging.Formatter('LINE %(lineno)-4d: %(levelname)-8s %(message)s')
     console.setFormatter(formatter)
     logging.getLogger('').addHandler(console)
 
+
+    # logger.debug("debug")
+    # logger.info("info")
 
 # 配置文件
 def Config(self):
