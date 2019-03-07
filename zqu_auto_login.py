@@ -104,10 +104,10 @@ def initLog():
     format = "[%(asctime)s] - %(levelname)s - %(module)s: %(message)s"
     """
     切割日志
-    结果是每7天生成一个日志文件，保留最近10次的日志文件
+    结果是每1天生成一个日志文件，保留最近10次的日志文件
     when参数可以设置S M H D,分别是秒、分、小时、天分割，也可以按周几分割，也可以凌晨分割
     """
-    handler = logging.handlers.TimedRotatingFileHandler(run_log, when='D', interval=7,
+    handler = logging.handlers.TimedRotatingFileHandler(run_log, when='D', interval=1,
                                                              backupCount=10,
                                                              atTime=datetime.time(0, 0, 0, 0))
     handler.suffix = "%Y-%m-%d.log"#切割后的日志设置后缀
