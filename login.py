@@ -209,3 +209,38 @@ def main(self):
     except Exception as e:
         self.logger.error("未知异常：{}".format(e))
 
+
+def logout_campus_network():
+    logging.info('登出')
+    se = requests.session()
+    try:
+        test_status = se.get('http://10.0.1.51')  # 获取重定向连接
+        user_index = parse_qs(urlparse(test_status.url).parse)['userIndex'][0]
+    except requests.exceptions.ConnectionError:
+        self.logger.warning("未链接校园网")
+        return
+    except KeyError:
+        self.logger.error('key error: 获取user index失败，请检查是否登录成功')
+        return
+    except Exception as e:
+        self.logger.error('ERROR: {}'.format(e))
+        return
+    http_headers = {
+        'Accept': 'text/html, application/xhtml+xml, application/xml; q=0.9, */*; q=0.8',
+        'Accept-Encoding': 'gzip, deflate',
+        'Accept-Language': 'zh-Hans-CN, zh-Hans; q=0.5',
+        'Cache-Control': 'max-age=0',
+        'Connection': 'Keep-Alive',
+        'Content-Length': '109',
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Host': 'enet.10000.gd.cn:10001',
+        'Referer': '',
+        'Upgrade-Insecure-Requests': '1',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.140 Safari/537.36 Edge/18.17763'
+    }
+    logout_url = 'http://10.0.1.51/eportal/InterFace.do?method=logout'
+    res = se.post(
+        logout_url, data={'userIndex': user_index}, headers=http_headers)
+    return res.status_code
+    # logging.info(res.status_code)
+
