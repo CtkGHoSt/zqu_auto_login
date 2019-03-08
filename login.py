@@ -212,7 +212,7 @@ def main(self):
 
 
 def logout_campus_network():
-    logging.info('登出')
+    self.logger.info('登出')
     se = requests.session()
     try:
         test_status = se.get('http://10.0.1.51')  # 获取重定向连接
@@ -242,6 +242,7 @@ def logout_campus_network():
     logout_url = 'http://10.0.1.51/eportal/InterFace.do?method=logout'
     res = se.post(
         logout_url, data={'userIndex': user_index}, headers=http_headers)
+    self.logger.info('登出状态：{}'.format(res.status_code))
     return res.status_code
     # logging.info(res.status_code)
 
