@@ -102,7 +102,7 @@ def initLog():
     """
     run_log = location + "\\log\\run.log"
     logger.setLevel(log_level)
-    format = "[%(asctime)s] - %(levelname)s - %(module)s - [line:%(lineno)d]: %(message)s"
+    format =logging.Formatter("[%(asctime)s]-%(levelname)-6s %(module)s:%(lineno)d - %(message)s","%m-%d %H:%M:%S")
     """
     切割日志
     结果是每1天生成一个日志文件，保留最近10次的日志文件,MIDNIGHT
@@ -114,13 +114,12 @@ def initLog():
     handler.suffix = "%Y-%m-%d.log"#切割后的日志设置后缀
     handler.extMatch = re.compile(r"^\d{4}-\d{2}-\d{2}.log$")
     handler.setLevel(log_level)
-    handler.setFormatter(logging.Formatter(format))
+    handler.setFormatter(format)
     logger.addHandler(handler)
     # 既输出到文件，又打印到terminal
     console = logging.StreamHandler()
     console.setLevel(log_level)
-    formatter = logging.Formatter('LINE %(lineno)-4d: %(levelname)-8s %(message)s')
-    console.setFormatter(formatter)
+    console.setFormatter(format)
     logging.getLogger().addHandler(console)
 
 
