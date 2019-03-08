@@ -9,7 +9,8 @@ from time import sleep
 import platform
 import threading
 from configparser import ConfigParser
-import logging, logging.handlers
+import logging
+from logging.handlers import TimedRotatingFileHandler
 import sys
 
 filePath = os.path.abspath(sys.argv[0])  # exe所在目录地址
@@ -99,16 +100,16 @@ def initLog():
     """
     log日志，按时间分割，清理过时日志
     """
-    run_log = location + "\\log\\run"
+    run_log = location + "\\log\\run.log"
     logger.setLevel(log_level)
-    format = "[%(asctime)s] - %(levelname)s - %(module)s: %(message)s"
+    format = "[%(asctime)s] - %(levelname)s - %(module)s - [line:%(lineno)d]: %(message)s"
     """
     切割日志
-    结果是每1天生成一个日志文件，保留最近10次的日志文件
+    结果是每1天生成一个日志文件，保留最近10次的日志文件,MIDNIGHT
     when参数可以设置S M H D,分别是秒、分、小时、天分割，也可以按周几分割，也可以凌晨分割
     """
-    handler = logging.handlers.TimedRotatingFileHandler(run_log, when='D', interval=1,
-                                                             backupCount=10,
+    handler = TimedRotatingFileHandler(run_log, when='MIDNIGHT', interval=1,
+                                                             backupCount=30,encoding='utf-8',
                                                              atTime=datetime.time(0, 0, 0, 0))
     handler.suffix = "%Y-%m-%d.log"#切割后的日志设置后缀
     handler.extMatch = re.compile(r"^\d{4}-\d{2}-\d{2}.log$")
@@ -120,7 +121,7 @@ def initLog():
     console.setLevel(log_level)
     formatter = logging.Formatter('LINE %(lineno)-4d: %(levelname)-8s %(message)s')
     console.setFormatter(formatter)
-    logging.getLogger('').addHandler(console)
+    logging.getLogger().addHandler(console)
 
 
     # logger.debug("debug")
