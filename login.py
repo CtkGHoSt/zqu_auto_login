@@ -211,7 +211,7 @@ def main(self):
         self.logger.error("未知异常：{}".format(e))
 
 
-def logout_campus_network():
+def logout_campus_network(self):
     self.logger.info('登出')
     se = requests.session()
     try:
