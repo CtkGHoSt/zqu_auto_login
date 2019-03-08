@@ -216,7 +216,7 @@ def logout_campus_network():
     se = requests.session()
     try:
         test_status = se.get('http://10.0.1.51')  # 获取重定向连接
-        user_index = parse_qs(urlparse(test_status.url).parse)['userIndex'][0]
+        user_index = parse_qs(urlparse(test_status.url).query)['userIndex'][0]
     except requests.exceptions.ConnectionError:
         self.logger.warning("未链接校园网")
         return
