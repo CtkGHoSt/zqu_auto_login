@@ -1,4 +1,4 @@
-# 肇庆学院电信wifi校园网自动登录 [![](https://img.shields.io/badge/release-1.0.1-brightgreen.svg)](https://github.com/CtkGHoSt/zqu_auto_login/releases)
+# 肇庆学院电信wifi校园网自动登录 [![](https://img.shields.io/badge/release-1.0.2-brightgreen.svg)](https://github.com/CtkGHoSt/zqu_auto_login/releases)
 
 
 ### by ctkghost chiihero
@@ -37,6 +37,9 @@ todo：
 
 > v1.0.2 更新    
 使用分割日志，并且定时清除
+重构代码
+修复无法退出bug
+添加周末凌晨运行
 
 > v1.0.1 更新    
 添加最小化任务栏模式
