@@ -63,11 +63,9 @@ class MyFrame(wx.Frame):
         self.m_staticText3.Wrap(-1)
         bSizer1.Add(self.m_staticText3, 0, wx.ALL, 5)
         self.check_logout = wx.CheckBox(self, wx.ID_ANY, u"远程下线", wx.DefaultPosition, wx.Size(-1, 27), 0)
-        self.check_logout.SetValue(True)
         bSizer1.Add(self.check_logout, 0, wx.ALL, 5)
-        self.check_start = wx.CheckBox(self, wx.ID_ANY, u"开机自启", wx.DefaultPosition, wx.Size(-1, 27), 0)
-        self.check_start.SetValue(True)
-        bSizer1.Add(self.check_start, 0, wx.ALL, 5)
+        self.check_autorun = wx.CheckBox(self, wx.ID_ANY, u"开机自启", wx.DefaultPosition, wx.Size(-1, 27), 0)
+        bSizer1.Add(self.check_autorun, 0, wx.ALL, 5)
 
         gSizer1.Add(bSizer1, 1, wx.EXPAND, 5)
 
@@ -77,8 +75,9 @@ class MyFrame(wx.Frame):
         bSizer2.Add(self.userid, 0, wx.ALL, 5)
         self.password = wx.TextCtrl(self, wx.ID_ANY, u"xxxxxxxx", wx.DefaultPosition, wx.Size(-1, 27), 0)
         bSizer2.Add(self.password, 0, wx.ALL, 5)
-        self.m_textCtrl4 = wx.TextCtrl(self, wx.ID_ANY, u"暂定", wx.DefaultPosition, wx.Size(-1, 27), 0)
-        bSizer2.Add(self.m_textCtrl4, 0, wx.ALL, 5)
+        self.logout_token = wx.TextCtrl(self, wx.ID_ANY, u"口令", wx.DefaultPosition, wx.Size(-1, 27), 0)
+        self.logout_token.Enable(False)
+        bSizer2.Add(self.logout_token, 0, wx.ALL, 5)
         self.btn_open = wx.Button(self, wx.ID_ANY, u"开启", wx.DefaultPosition, wx.Size(110, -1), 0)
         bSizer2.Add(self.btn_open, 0, wx.ALL, 5)
 
@@ -95,17 +94,24 @@ class MyFrame(wx.Frame):
         if os.path.exists(self.config_file):
             userid = conf.get('user', 'userid')
             password = conf.get('user', 'password')
-            check = conf.get('user', 'check')
-            logout = conf.get('user', 'logout_token')
+            logout = conf.get('user', 'check_logout')
+            logout_token = conf.get('user', 'logout_token')
+
+            autorun = conf.get('user', 'check_autorun')
             self.userid.SetValue(userid)
             self.password.SetValue(password)
+            self.logout_token.SetValue(logout_token)
             if logout == "True":
                 self.check_logout.SetValue(True)
-            if check == "True":
-                self.check_start.SetValue(True)
+                self.logout_token.Enable(True)
+            if autorun == "True":
+                self.check_autorun.SetValue(True)
 
         # 绑定按钮的单击事件
+
         self.Bind(wx.EVT_BUTTON, self.open, self.btn_open)
+        self.check_logout.Bind(wx.EVT_CHECKBOX, self.logout)
+
         self.Bind(wx.EVT_ICONIZE, self.hide) # 窗口最小化时，调用OnHide,注意Wx窗体上的最小化按钮，触发的事件是 wx.EVT_ICONIZE,而根本就没有定义什么wx.EVT_MINIMIZE,但是最大化，有个wx.EVT_MAXIMIZE。
         self.Bind(wx.EVT_CLOSE, self.exit)
         """ 设置图标"""
@@ -120,6 +126,14 @@ class MyFrame(wx.Frame):
     def hide(self,event):
         self.Hide()
         self.Iconize(False)
+
+    def logout(self, event):
+        logout_bool = self.check_logout.GetValue()
+        if logout_bool:
+            self.logout_token.Enable(True)
+        else:
+            self.logout_token.Enable(False)
+
 
     def exit(self,event):
         # self.Destroy()
