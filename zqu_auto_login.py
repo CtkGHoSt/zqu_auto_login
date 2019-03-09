@@ -12,6 +12,7 @@ import threading
 import logging
 from logging.handlers import TimedRotatingFileHandler
 import sys
+import requests
 
 from config import file_abspath, location, logger, conf, config_file, is_running
 
@@ -25,6 +26,7 @@ class MainWin(frame.MyFrame):
         return userid, password, check
 
     def open(self, event):
+        global is_running
         if self.btn_open.GetLabel() == "开启":
             is_running = True
             self.btn_open.SetLabel("停止")
@@ -34,7 +36,7 @@ class MainWin(frame.MyFrame):
             conf.set('user', 'check', str(check))
             with open(config_file, 'w') as fw:  # 循环写入
                 conf.write(fw)
-            thread = MainThread(userid, password, check)
+            thread = MainThread(userid, password, check, self.btn_open)
             thread.start()
         else:
             # os._exit(0)
@@ -45,11 +47,13 @@ class MainWin(frame.MyFrame):
     # 初始化程序
 
 class MainThread(threading.Thread):
-    def __init__(self, userid, password, check):  # 线程实例化时立即启动
+    def __init__(self, userid, password, check, btn_open, logout_token=''):  # 线程实例化时立即启动
         threading.Thread.__init__(self)
         self.userid = userid
         self.password = password
         self.check = check
+        self.btn_open = btn_open
+        self.logout_token = logout_token
 
     def run(self):  # 线程执行的代码
         self.auto_start()
@@ -78,9 +82,24 @@ class MainThread(threading.Thread):
 
     def login_start(self):
         """子线程要执行的代码"""
+        def remote_logout():
+            """
+            远程下线
+            """
+            res = requests.get('http://zqu.ctkghost.tk/logout/{}/{}'.format(self.userid, self.logout_token))
+            if res.status_code == 200:
+                global is_running
+                is_running = False
+                login.logout_campus_network()
+                logger.warning('远程下线成功')
+        
         logger.debug("第一次运行测试")
         login.main(self.userid, self.password)  # 第一次启动
         sleep(5)
+        logout_token = conf.get('run', 'logout_token')
+        # 远程下线
+        if False and self.logout_token:
+            schedule.every(10).seconds.do(remote_logout)
         if conf.get('run', 'time_unit') == 'minutes':
             schedule.every(conf.getint('run', 'every_time')).minutes.do(login.main, self.userid, self.password)
         elif conf.get('run', 'time_unit') == 'seconds':
@@ -91,10 +110,12 @@ class MainThread(threading.Thread):
                 conf.get('run', 'time_unit')
             ))
             sys.exit(1)
+        global is_running
         while is_running:
             schedule.run_pending()
             sleep(1)
-
+        self.btn_open.SetLabel("开启")
+        
 
 def init_log():
     level = conf.get('run', 'log_level')
