@@ -14,7 +14,7 @@ def test_form_func():
 def main():
     return render_template('logout.html')
 
-@app.route('/logout', methods=['GET', 'POST'])
+@app.route('/logout', methods=['GET', 'POST', 'DELETE'])
 def logout_api():
     userid = request.values.get('userid')
     token = request.values.get('token')
@@ -25,6 +25,8 @@ def logout_api():
             abort(404)
     elif request.method == 'POST':
         return '<h1>REMOTE LOGOUT SUCCESS!</h1>'
+    elif request.method == 'DELETE':
+        return ''
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0',port=5001,debug=False)
