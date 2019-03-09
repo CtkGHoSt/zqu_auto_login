@@ -64,7 +64,6 @@ def is_campus_network():
 
 def online_time():
     now = datetime.now().strftime("%H:%M")
-    print(conf.get('run', 'end_time'))
     if now > conf.get('run', 'begin_time') and now < conf.get('run', 'end_time'):#旧版本
         return True
     return False
