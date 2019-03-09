@@ -25,6 +25,7 @@ def load_conf():
             date = "[user]\n" \
                    "userid = 2016241314xx\n" \
                    "password = xxxxxxxx\n" \
+                   "logout_token = False\n" \
                    "check = True\n\n" \
                    "[run]\n" \
                    "time_unit = minutes\n" \

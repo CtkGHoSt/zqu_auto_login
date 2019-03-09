@@ -49,32 +49,42 @@ class MyTaskBarIcon(wx.adv.TaskBarIcon):
 
 class MyFrame(wx.Frame):
     def __init__(self, parent):
-        wx.Frame.__init__(self, parent, id=wx.ID_ANY, title=TITLE, pos=wx.DefaultPosition,
-                          size=wx.Size(320, 174),
-                          style=wx.DEFAULT_FRAME_STYLE |
-                                wx.TAB_TRAVERSAL)
-        self.SetIcon(wx.Icon(school_ico.GetIcon()))  # 设置图标
-        self.SetSizeHints(wx.DefaultSize, wx.DefaultSize)
-        self.taskBarIcon=MyTaskBarIcon(self)#显示系统托盘图标
-        self.SetMaxSize((320, 174))  # 固定窗口
-        self.SetMinSize((320, 174))
-        gSizer = wx.GridSizer(0, 2, 0, 0)
-        self.m_staticText2 = wx.StaticText(self, wx.ID_ANY, u"学号", wx.DefaultPosition, wx.DefaultSize, 0)
-        self.m_staticText2.Wrap(-1)
-        gSizer.Add(self.m_staticText2, 0, wx.ALL, 5)
-        self.userid = wx.TextCtrl(self, wx.ID_ANY, u"2016241314xx", wx.DefaultPosition, wx.DefaultSize, 0)
-        gSizer.Add(self.userid, 0, wx.ALL, 5)
-        self.m_staticText1 = wx.StaticText(self, wx.ID_ANY, u"密码(电信8位;移动6位)", wx.DefaultPosition, wx.DefaultSize, 0)
-        self.m_staticText1.Wrap(-1)
-        gSizer.Add(self.m_staticText1, 0, wx.ALL, 5)
-        self.password = wx.TextCtrl(self, wx.ID_ANY, u"xxxxxxxx", wx.DefaultPosition, wx.DefaultSize, 0)
-        gSizer.Add(self.password, 0, wx.ALL, 5)
-        self.check_start = wx.CheckBox(self, wx.ID_ANY, u"开机自启", wx.DefaultPosition, wx.DefaultSize, 0)
-        gSizer.Add(self.check_start, 0, wx.ALL, 5)
-        self.btn_open = wx.Button(self, wx.ID_ANY, u"开启", wx.DefaultPosition, wx.DefaultSize, 0)
-        gSizer.Add(self.btn_open, 0, wx.ALL, 5)
+        wx.Frame.__init__(self, parent, id=wx.ID_ANY, title=TITLE, pos=wx.DefaultPosition, size=wx.Size(300, 190),
+                          style=wx.CAPTION | wx.CLOSE_BOX  | wx.MINIMIZE_BOX | wx.SYSTEM_MENU | wx.TAB_TRAVERSAL)
 
-        self.SetSizer(gSizer)
+        self.SetSizeHints(wx.Size(300, 190), wx.Size(300, 190))# 固定窗口
+        gSizer1 = wx.GridSizer(0, 2, 0, 0)
+        bSizer1 = wx.BoxSizer(wx.VERTICAL)
+
+        self.m_staticText2 = wx.StaticText(self, wx.ID_ANY, u"学号", wx.DefaultPosition, wx.Size(-1, 27), 0)
+        self.m_staticText2.Wrap(-1)
+        bSizer1.Add(self.m_staticText2, 0, wx.ALL, 5)
+        self.m_staticText3 = wx.StaticText(self, wx.ID_ANY, u"密码(电信8位;移动6位)", wx.DefaultPosition, wx.Size(-1, 27), 0)
+        self.m_staticText3.Wrap(-1)
+        bSizer1.Add(self.m_staticText3, 0, wx.ALL, 5)
+        self.check_logout = wx.CheckBox(self, wx.ID_ANY, u"远程下线", wx.DefaultPosition, wx.Size(-1, 27), 0)
+        self.check_logout.SetValue(True)
+        bSizer1.Add(self.check_logout, 0, wx.ALL, 5)
+        self.check_start = wx.CheckBox(self, wx.ID_ANY, u"开机自启", wx.DefaultPosition, wx.Size(-1, 27), 0)
+        self.check_start.SetValue(True)
+        bSizer1.Add(self.check_start, 0, wx.ALL, 5)
+
+        gSizer1.Add(bSizer1, 1, wx.EXPAND, 5)
+
+        bSizer2 = wx.BoxSizer(wx.VERTICAL)
+
+        self.userid = wx.TextCtrl(self, wx.ID_ANY, u"2016241314xx", wx.DefaultPosition, wx.Size(-1, 27), 0)
+        bSizer2.Add(self.userid, 0, wx.ALL, 5)
+        self.password = wx.TextCtrl(self, wx.ID_ANY, u"xxxxxxxx", wx.DefaultPosition, wx.Size(-1, 27), 0)
+        bSizer2.Add(self.password, 0, wx.ALL, 5)
+        self.m_textCtrl4 = wx.TextCtrl(self, wx.ID_ANY, u"暂定", wx.DefaultPosition, wx.Size(-1, 27), 0)
+        bSizer2.Add(self.m_textCtrl4, 0, wx.ALL, 5)
+        self.btn_open = wx.Button(self, wx.ID_ANY, u"开启", wx.DefaultPosition, wx.Size(110, -1), 0)
+        bSizer2.Add(self.btn_open, 0, wx.ALL, 5)
+
+        gSizer1.Add(bSizer2, 1, wx.EXPAND, 5)
+
+        self.SetSizer(gSizer1)
         self.Layout()
         self.Centre(wx.BOTH)
 
@@ -86,14 +96,23 @@ class MyFrame(wx.Frame):
             userid = conf.get('user', 'userid')
             password = conf.get('user', 'password')
             check = conf.get('user', 'check')
+            logout = conf.get('user', 'logout_token')
             self.userid.SetValue(userid)
             self.password.SetValue(password)
+            if logout == "True":
+                self.check_logout.SetValue(True)
             if check == "True":
                 self.check_start.SetValue(True)
+
         # 绑定按钮的单击事件
         self.Bind(wx.EVT_BUTTON, self.open, self.btn_open)
         self.Bind(wx.EVT_ICONIZE, self.hide) # 窗口最小化时，调用OnHide,注意Wx窗体上的最小化按钮，触发的事件是 wx.EVT_ICONIZE,而根本就没有定义什么wx.EVT_MINIMIZE,但是最大化，有个wx.EVT_MAXIMIZE。
         self.Bind(wx.EVT_CLOSE, self.exit)
+        """ 设置图标"""
+        self.SetIcon(wx.Icon(school_ico.GetIcon()))
+        self.SetSizeHints(wx.DefaultSize, wx.DefaultSize)
+        self.taskBarIcon=MyTaskBarIcon(self)#显示系统托盘图标
+
 
     def open(self, event):
         event.Skip()

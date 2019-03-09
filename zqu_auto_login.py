@@ -21,16 +21,19 @@ class MainWin(frame.MyFrame):
     def getvalue(self, event):
         userid = self.userid.GetValue()
         password = self.password.GetValue()
+        logout = self.check_logout.GetValue()
+
         check = self.check_start.GetValue()
-        return userid, password, check
+        return userid, password,logout, check
 
     def open(self, event):
         if self.btn_open.GetLabel() == "开启":
             is_running = True
             self.btn_open.SetLabel("停止")
-            userid, password, check = main_win.getvalue(self)
+            userid, password, logout,check = main_win.getvalue(self)
             conf.set('user', 'userid', value=userid)
             conf.set('user', 'password', password)
+            conf.set('user', 'logout_token', str(logout))
             conf.set('user', 'check', str(check))
             with open(config_file, 'w') as fw:  # 循环写入
                 conf.write(fw)
