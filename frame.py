@@ -14,23 +14,23 @@ class MyTaskBarIcon(wx.adv.TaskBarIcon):
         wx.adv.TaskBarIcon.__init__(self)
         self.frame = frame
         self.SetIcon(wx.Icon(school_ico.GetIcon()), TITLE)  # 设置图标和标题
-        self.Bind(wx.EVT_MENU, self.onExit, id=self.ID_EXIT)  # 绑定“退出”选项的点击事件
-        self.Bind(wx.EVT_MENU, self.onShow, id=self.ID_SHOW_WEB)  # 绑定“显示页面”选项的点击事件
-        self.Bind(wx.adv.EVT_TASKBAR_LEFT_DCLICK, self.OnTaskBarLeftDClick)  # 任务栏单击左键的点击事件
+        self.Bind(wx.EVT_MENU, self.exit, id=self.ID_EXIT)  # 绑定“退出”选项的点击事件
+        self.Bind(wx.EVT_MENU, self.show, id=self.ID_SHOW_WEB)  # 绑定“显示页面”选项的点击事件
+        self.Bind(wx.adv.EVT_TASKBAR_LEFT_DCLICK, self.left_click)  # 任务栏单击左键的点击事件
 
     # “退出”选项的事件处理器
-    def onExit(self, event):
+    def exit(self, event):
         os._exit(0)
         # wx.Exit()
         # self.Destroy()
 
     # “显示页面”选项的事件处理器
-    def onShow(self, event):
+    def show(self, event):
         self.frame.Show(True)
         self.frame.Raise()
 
     # 双击显示选项的事件处理器
-    def onTaskBarLeftDClick(self, event):
+    def left_click(self, event):
         if self.frame.IsIconized():
             self.frame.Iconize(False)
         if not self.frame.IsShown():
@@ -92,17 +92,17 @@ class MyFrame(wx.Frame):
                 self.check_start.SetValue(True)
         # 绑定按钮的单击事件
         self.Bind(wx.EVT_BUTTON, self.open, self.btn_open)
-        self.Bind(wx.EVT_ICONIZE, self.onHide) # 窗口最小化时，调用OnHide,注意Wx窗体上的最小化按钮，触发的事件是 wx.EVT_ICONIZE,而根本就没有定义什么wx.EVT_MINIMIZE,但是最大化，有个wx.EVT_MAXIMIZE。
-        self.Bind(wx.EVT_CLOSE, self.onExit)
+        self.Bind(wx.EVT_ICONIZE, self.hide) # 窗口最小化时，调用OnHide,注意Wx窗体上的最小化按钮，触发的事件是 wx.EVT_ICONIZE,而根本就没有定义什么wx.EVT_MINIMIZE,但是最大化，有个wx.EVT_MAXIMIZE。
+        self.Bind(wx.EVT_CLOSE, self.exit)
 
     def open(self, event):
         event.Skip()
 
-    def onHide(self,event):
+    def hide(self,event):
         self.Hide()
         self.Iconize(False)
 
-    def onExit(self,event):
+    def exit(self,event):
         # self.Destroy()
         # self.taskBarIcon.Destroy()
         os._exit(0)

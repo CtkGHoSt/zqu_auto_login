@@ -2,7 +2,7 @@
 import datetime
 import re
 import wx  # 引入wx模块
-import Frame
+import frame
 import login
 import schedule
 import os
@@ -18,7 +18,7 @@ import sys
 from config import file_abspath, location, logger, conf
 
 # 创建mainWin类并传入my_win.MyFrame
-class mainWin(Frame.MyFrame):
+class MainWin(frame.MyFrame):
     def GetValue(self, event):
         userid = self.userid.GetValue()
         password = self.password.GetValue()
@@ -89,7 +89,7 @@ class MainThread(threading.Thread):
             schedule.run_pending()
             sleep(1)
 
-def initLog():
+def init_log():
     level = conf.get('run', 'log_level')
     if level == 'info':
         log_level = logging.INFO
@@ -132,9 +132,9 @@ def hideFile(file_abspath):
 
 if __name__ == '__main__':
     # 初始化程序
-    initLog()  # 初始化log文件
+    init_log()  # 初始化log文件
     # 下面是使用wxPython的固定用法
     app = wx.App()
-    main_win = mainWin(None)
+    main_win = MainWin(None)
     main_win.Show()
     app.MainLoop()
