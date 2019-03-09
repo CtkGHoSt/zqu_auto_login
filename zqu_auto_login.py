@@ -75,12 +75,12 @@ class MainThread(threading.Thread):
         logger.debug("第一次运行测试")
         login.main(self.userid, self.password)  # 第一次启动
         sleep(5)
-        if self.time_unit == 'minutes':
+        if conf.get('run', 'time_unit') == 'minutes':
             schedule.every(conf.getint('run', 'every_time')).minutes.do(login.main, self.userid, self.password)
-        elif self.time_unit == 'seconds':
+        elif conf.get('run', 'time_unit') == 'seconds':
             schedule.every(conf.getint('run', 'every_time')).seconds.do(login.main, self.userid, self.password)  # 测试
         else:
-            self.logger.critical('conf.ini配置错误：{}'.format(
+            logger.critical('conf.ini配置错误：{}'.format(
                 conf.getint('run', 'every_time'),
                 conf.get('run', 'time_unit')
             ))
