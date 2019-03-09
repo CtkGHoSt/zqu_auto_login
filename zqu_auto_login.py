@@ -96,20 +96,22 @@ class MainThread(threading.Thread):
             """
             远程下线
             """
-            res = requests.get('http://zqu.ctkghost.tk/logout/{}/{}'.format(self.userid, self.logout_token))
+            res = requests.get('http://localhost:5001/logout?userid={}&token={}'.format(self.userid, self.logout_token))
             if res.status_code == 200:
                 global is_running
                 is_running = False
                 login.logout_campus_network()
                 logger.warning('远程下线成功')
+            else:
+                logger.debug(res.status_code)
         
         logger.debug("第一次运行测试")
         login.main(self.userid, self.password)  # 第一次启动
         sleep(5)
-        logout_token = conf.get('run', 'logout_token')
+        logout_token = conf.get('user', 'logout_token')
         # 远程下线
-        if False and self.logout_token:
-            schedule.every(10).seconds.do(remote_logout)
+        if self.check_logout and self.logout_token:
+            schedule.every(2).seconds.do(remote_logout)
         if conf.get('run', 'time_unit') == 'minutes':
             schedule.every(conf.getint('run', 'every_time')).minutes.do(login.main, self.userid, self.password)
         elif conf.get('run', 'time_unit') == 'seconds':
@@ -126,7 +128,6 @@ class MainThread(threading.Thread):
             sleep(1)
         schedule.clear()
         self.btn_open.SetLabel("开启")
-        
 
 def init_log():
     level = conf.get('run', 'log_level')
