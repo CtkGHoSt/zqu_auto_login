@@ -98,15 +98,6 @@ def initLog():
     else:
         log_level = logging.DEBUG
     """
-    log日志的简单应用
-    logging.basicConfig(
-        format='[%(asctime)s] - %(levelname)s - %(module)s: %(message)s',
-        datefmt='%Y-%m-%d %H:%M:%S',
-        level=log_level,
-        handlers=[logging.FileHandler(location + "\\run.log"), logging.StreamHandler()]
-    )
-    """
-    """
     log日志，按时间分割，清理过时日志
     """
     run_log = location + "\\log\\run.log"

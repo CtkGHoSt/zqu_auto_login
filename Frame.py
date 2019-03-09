@@ -20,8 +20,9 @@ class MyTaskBarIcon(wx.adv.TaskBarIcon):
 
     # “退出”选项的事件处理器
     def onExit(self, event):
-        wx.Exit()
-        self.Destroy()
+        os._exit(0)
+        # wx.Exit()
+        # self.Destroy()
 
     # “显示页面”选项的事件处理器
     def onShow(self, event):
@@ -29,7 +30,7 @@ class MyTaskBarIcon(wx.adv.TaskBarIcon):
         self.frame.Raise()
 
     # 双击显示选项的事件处理器
-    def OnTaskBarLeftDClick(self, event):
+    def onTaskBarLeftDClick(self, event):
         if self.frame.IsIconized():
             self.frame.Iconize(False)
         if not self.frame.IsShown():
@@ -85,29 +86,24 @@ class MyFrame(wx.Frame):
             userid = conf.get('user', 'userid')
             password = conf.get('user', 'password')
             check = conf.get('user', 'check')
-
             self.userid.SetValue(userid)
             self.password.SetValue(password)
             if check == "True":
                 self.check_start.SetValue(True)
-
-
-            # 绑定按钮的单击事件
+        # 绑定按钮的单击事件
         self.Bind(wx.EVT_BUTTON, self.open, self.btn_open)
-        self.Bind(wx.EVT_ICONIZE, self.OnHide) # 窗口最小化时，调用OnHide,注意Wx窗体上的最小化按钮，触发的事件是 wx.EVT_ICONIZE,而根本就没有定义什么wx.EVT_MINIMIZE,但是最大化，有个wx.EVT_MAXIMIZE。
+        self.Bind(wx.EVT_ICONIZE, self.onHide) # 窗口最小化时，调用OnHide,注意Wx窗体上的最小化按钮，触发的事件是 wx.EVT_ICONIZE,而根本就没有定义什么wx.EVT_MINIMIZE,但是最大化，有个wx.EVT_MAXIMIZE。
         self.Bind(wx.EVT_CLOSE, self.onExit)
 
     def open(self, event):
         event.Skip()
 
-    def OnHide(self, event):
+    def onHide(self,event):
         self.Hide()
         self.Iconize(False)
 
-    def onExit(self, event):
-        self.taskBarIcon.Destroy()
-        self.Destroy()
-
-    def __del__(self):
-        pass
+    def onExit(self,event):
+        # self.Destroy()
+        # self.taskBarIcon.Destroy()
+        os._exit(0)
 
