@@ -41,7 +41,13 @@ class MainWin(frame.MyFrame):
             conf.set('user', 'check_autorun', str(autorun))
             with open(config_file, 'w') as fw:  # 循环写入
                 conf.write(fw)
-            thread = MainThread(userid, password, check, self.btn_open)
+            thread = MainThread(
+                userid=userid, 
+                password=password, 
+                check_logout=logout, 
+                btn_open=self.btn_open, 
+                logout_token=logout_token
+            )
             thread.start()
         else:
             # os._exit(0)
@@ -51,13 +57,13 @@ class MainWin(frame.MyFrame):
 
 
 class MainThread(threading.Thread):
-    def __init__(self, userid, password, check, btn_open, logout_token=''):  # 线程实例化时立即启动
+    def __init__(self, **argv):  # 线程实例化时立即启动
         threading.Thread.__init__(self)
-        self.userid = userid
-        self.password = password
-        self.check = check
-        self.btn_open = btn_open
-        self.logout_token = logout_token
+        self.userid = argv['userid']
+        self.password = argv['password']
+        self.btn_open = argv['btn_open']
+        self.logout_token = argv['logout_token']
+        self.check_logout = argv['check_logout']
 
     def run(self):  # 线程执行的代码
         self.auto_start()
