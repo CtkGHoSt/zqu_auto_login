@@ -16,6 +16,7 @@ config_file = location + "\conf.ini"
 # log
 logger = logging.getLogger("mylogger")
 
+
 # conf.ini
 def load_conf():
     def initConfig():
@@ -25,7 +26,9 @@ def load_conf():
             date = "[user]\n" \
                    "userid = 2016241314xx\n" \
                    "password = xxxxxxxx\n" \
-                   "check = True\n\n" \
+                   "check_logout = False\n" \
+                   "logout_token = xxxxx\n" \
+                   "check_autorun = True\n\n" \
                    "[run]\n" \
                    "time_unit = minutes\n" \
                    "every_time = 5\n" \
@@ -41,6 +44,6 @@ def load_conf():
     conf = ConfigParser()
     conf.read(config_file, encoding='utf-8')
     return conf
-conf = load_conf()
-    
 
+
+conf = load_conf()

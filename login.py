@@ -12,11 +12,13 @@ from config import logger, conf
 
 test_url = 'http://quan.suning.com/getSysTime.do'  # 测试连接状态url
 
+
 def connect_wifi():
     logger.warning('正在连接到学校wifi')
     backinfo = os.system('netsh wlan connect name="ZQU-WebAuth"')  # 连到学校wifi
     sleep(5)
     return backinfo
+
 
 def check_net():
     """
@@ -62,12 +64,13 @@ def is_campus_network():
         logger.debug("在校园网")
         return 1
 
+
 def online_time():
     now_date = datetime.now()
-    if now_date.weekday() >=5: # 周末
+    if now_date.weekday() >= 5:  # 周末
         return True
     now = now_date.strftime("%H:%M")
-    if now > conf.get('run', 'begin_time') and now < conf.get('run', 'end_time'):#旧版本
+    if now > conf.get('run', 'begin_time') and now < conf.get('run', 'end_time'):  # 旧版本
         return True
     return False
 
@@ -118,7 +121,7 @@ def auto_login_1(userid, password):
 
 def auto_login_2(userid, password):
     logger.info('开始电信验证')
-    logger.debug('学号：'+userid+' 密码:'+password)
+    logger.debug('学号：' + userid + ' 密码:' + password)
 
     se = requests.session()  # 新建会话
     test_status = se.get(test_url)  # 获取重定向连接
@@ -148,7 +151,7 @@ def auto_login_2(userid, password):
 
     try:
         http_headers['Referer'] = test_status.url
-        url_parse = parse.urlparse(test_status.url) # 获取链接参数
+        url_parse = parse.urlparse(test_status.url)  # 获取链接参数
         url_parse_dict = parse.parse_qs(url_parse.query)
     except UnboundLocalError:
         logger.error('auto login 2 - UnboundLocalError')
@@ -163,9 +166,8 @@ def auto_login_2(userid, password):
     v_code_image.close()
     # 验证码识别
     v_code = validation_code_recognition('./test.jpg')
-    os.remove('./test.jpg')#删除验证码文件
+    os.remove('./test.jpg')  # 删除验证码文件
     logger.debug('验证码：{}'.format(v_code))
-
 
     sleep(2)
 
@@ -247,4 +249,3 @@ def logout_campus_network():
         logout_url, data={'userIndex': user_index}, headers=http_headers)
     logger.info('登出状态：{}'.format(res.status_code))
     return res.status_code
-

@@ -22,18 +22,23 @@ class MainWin(frame.MyFrame):
     def getvalue(self, event):
         userid = self.userid.GetValue()
         password = self.password.GetValue()
-        check = self.check_start.GetValue()
-        return userid, password, check
+        logout = self.check_logout.GetValue()
+        logout_token = self.logout_token.GetValue()
+        autorun = self.check_autorun.GetValue()
+        return userid, password, logout, logout_token, autorun
 
     def open(self, event):
         global is_running
         if self.btn_open.GetLabel() == "开启":
             is_running = True
             self.btn_open.SetLabel("停止")
-            userid, password, check = main_win.getvalue(self)
+            userid, password, logout, logout_token, autorun = main_win.getvalue(self)
             conf.set('user', 'userid', value=userid)
             conf.set('user', 'password', password)
-            conf.set('user', 'check', str(check))
+            conf.set('user', 'check_logout', str(logout))
+            conf.set('user', 'logout_token', logout_token)
+
+            conf.set('user', 'check_autorun', str(autorun))
             with open(config_file, 'w') as fw:  # 循环写入
                 conf.write(fw)
             thread = MainThread(userid, password, check, self.btn_open)
@@ -44,7 +49,6 @@ class MainWin(frame.MyFrame):
             is_running = False
             logger.info('停止运行')
 
-    # 初始化程序
 
 class MainThread(threading.Thread):
     def __init__(self, userid, password, check, btn_open, logout_token=''):  # 线程实例化时立即启动
@@ -149,6 +153,7 @@ def init_log():
     console.setLevel(log_level)
     console.setFormatter(format)
     logging.getLogger().addHandler(console)
+
 
 """
 # 隐藏配置文件

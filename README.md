@@ -29,10 +29,8 @@ log_level = debug 日志级别输出 （debug/info/warning）
 ```
 
 >
-todo：
-登录失败返回页面报错信息
-远程下线
-周末的凌晨允许登录
+todo：   
+远程下线    
 …
 
 > v1.0.2 更新    
