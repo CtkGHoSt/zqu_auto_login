@@ -8,6 +8,7 @@ from configparser import ConfigParser
 # 路径
 file_abspath = os.path.abspath(sys.argv[0])  # exe所在目录地址
 location = os.path.dirname(file_abspath)  # exe所在文件夹目录地址
+config_file = location + "\conf.ini"
 
 # log
 logger = logging.getLogger("mylogger")
@@ -33,11 +34,8 @@ def load_conf():
             f.close()
 
     initConfig()
-    config_file = location + "\conf.ini"
     conf = ConfigParser()
     conf.read(config_file, encoding='utf-8')
-    with open(config_file, 'w') as fw:  # 循环写入
-        conf.write(fw)
     return conf
 conf = load_conf()
     

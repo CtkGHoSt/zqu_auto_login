@@ -13,7 +13,7 @@ import logging
 from logging.handlers import TimedRotatingFileHandler
 import sys
 
-from config import file_abspath, location, logger, conf
+from config import file_abspath, location, logger, conf, config_file
 
 
 # 创建mainWin类并传入my_win.MyFrame
@@ -31,6 +31,8 @@ class MainWin(frame.MyFrame):
             conf.set('user', 'userid', value=userid)
             conf.set('user', 'password', password)
             conf.set('user', 'check', str(check))
+            with open(config_file, 'w') as fw:  # 循环写入
+                conf.write(fw)
             thread = MainThread(userid, password, check)
             thread.start()
         else:
