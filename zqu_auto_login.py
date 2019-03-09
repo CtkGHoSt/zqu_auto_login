@@ -36,6 +36,7 @@ class MainWin(frame.MyFrame):
         else:
             os._exit(0)
 
+    # 初始化程序
 
 class MainThread(threading.Thread):
     def __init__(self, userid, password, check):  # 线程实例化时立即启动
@@ -131,7 +132,6 @@ def hideFile(file_abspath):
 """
 
 if __name__ == '__main__':
-    # 初始化程序
     init_log()  # 初始化log文件
     # 下面是使用wxPython的固定用法
     app = wx.App()
