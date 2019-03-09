@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import datetime
 import re
 import wx  # 引入wx模块
@@ -13,10 +14,8 @@ import logging
 from logging.handlers import TimedRotatingFileHandler
 import sys
 
-filePath = os.path.abspath(sys.argv[0])  # exe所在目录地址
-location = os.path.dirname(filePath)  # exe所在文件夹目录地址
-logger = logging.getLogger("mylogger")
 
+from config import file_abspath, location, logger, conf
 
 # 创建mainWin类并传入my_win.MyFrame
 class mainWin(Frame.MyFrame):
@@ -30,6 +29,9 @@ class mainWin(Frame.MyFrame):
         if self.btn_open.GetLabel() == "开启":
             self.btn_open.SetLabel("关闭")
             userid, password, check = main_win.GetValue(self)
+            conf.set('user', 'userid', value=userid)
+            conf.set('user', 'password', password)
+            conf.set('user', 'check', str(check))
             thread = MainThread(userid, password, check)
             thread.start()
         else:
@@ -42,45 +44,52 @@ class MainThread(threading.Thread):
         self.userid = userid
         self.password = password
         self.check = check
-        self.config_file = location + "\conf.ini"
-        self.conf = ConfigParser()
-        self.begin_time = ""
-        self.end_time = ""
-        self.logger = logger
-        self.time_unit = ""
 
     def run(self):  # 线程执行的代码
-        Config(self)
-        autostart(self)
-        self.logger.info('学号：' + self.userid + ' 密码:' + self.password)
-        loginstart(self)
-
-
-def initConfig():
-    if not os.path.exists(location + "\log"):
-        os.mkdir("log")
-    if not os.path.exists(location + "\conf.ini"):
-        date = "[user]\n" \
-               "userid = 2016241314xx\n" \
-               "password = xxxxxxxx\n" \
-               "check = True\n\n" \
-               "[run]\n" \
-               "time_unit = minutes\n" \
-               "every_time = 5\n" \
-               "begin_time = 07:00\n" \
-               "end_time = 23:59\n" \
-               "log_level = debug\n"
-        f = open(location + "\conf.ini", 'w')
-        f.write(date)
-        f.close()
-
+        self.auto_start()
+        logger.info('学号：' + self.userid + ' 密码:' + self.password)
+        self.login_start()
+    
+    def auto_start(self):
+        '''
+        开机启动
+        '''
+        #######删除历史使用#######
+        cmd = 'reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run" /v AutoLogin /f '
+        os.system(cmd)
+        #########################
+        name = 'AutoLogin_ZQU'  # 要添加的项值名称
+        if 'Windows' in platform.system():
+            try:
+                if self.check:
+                    cmd = 'reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run" /v ' + name + ' /t reg_sz /d "' + file_abspath + '" /f '
+                    os.system(cmd)
+                else:
+                    cmd = 'reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run" /v ' + name + ' /f '
+                    os.system(cmd)
+            except:
+                logger.error('修改开机项失败')
+    
+    def login_start(self):
+        '''子线程要执行的代码'''
+        logger.debug("第一次运行测试")
+        login.main(self.userid, self.password)  # 第一次启动
+        sleep(5)
+        if conf.get('run', 'time_unit') == 'minutes':
+            schedule.every(conf.getint('run', 'every_time')).minutes.do(login.main, self.userid, self.password)
+        elif conf.get('run', 'time_unit') == 'seconds':
+            schedule.every(conf.getint('run', 'every_time')).seconds.do(login.main, self.userid, self.password)  # 测试
+        else:
+            logger.critical('conf.ini配置错误：{}'.format(
+                conf.getint('run', 'every_time'),
+                conf.get('run', 'time_unit')
+            ))
+            sys.exit(1)
+        while 1:
+            schedule.run_pending()
+            sleep(1)
 
 def initLog():
-    global log_level
-    conf = ConfigParser()
-    conf.read(location + "\conf.ini", encoding='utf-8')
-    # 获取开始时间和结束时间
-
     level = conf.get('run', 'log_level')
     if level == 'info':
         log_level = logging.INFO
@@ -123,72 +132,15 @@ def initLog():
     logging.getLogger().addHandler(console)
 
 
-    # logger.debug("debug")
-    # logger.info("info")
-
-# 配置文件
-def Config(self):
-    self.conf.read(self.config_file, encoding='utf-8')
-    self.conf.set('user', 'userid', value=self.userid)
-    self.conf.set('user', 'password', self.password)
-    self.conf.set('user', 'check', str(self.check))
-    with open(self.config_file, 'w') as fw:  # 循环写入
-        self.conf.write(fw)
-    # 读取
-    self.begin_time = self.conf.get('run', 'begin_time')
-    self.end_time = self.conf.get('run', 'end_time')
-    self.time_unit = self.conf.get('run', 'time_unit')
-
-
 # 隐藏配置文件
-def hideFile(filePath):
+def hideFile(file_abspath):
     if 'Windows' in platform.system():
-        cmd = 'attrib +h "' + filePath + '"'
+        cmd = 'attrib +h "' + file_abspath + '"'
         os.system(cmd)
-
-
-# 开机自启
-def autostart(self):
-    #######删除历史使用#######
-    cmd = 'reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run" /v AutoLogin /f '
-    os.system(cmd)
-    #########################
-    name = 'AutoLogin_ZQU'  # 要添加的项值名称
-    if 'Windows' in platform.system():
-        try:
-            if self.check:
-                cmd = 'reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run" /v ' + name + ' /t reg_sz /d "' + filePath + '" /f '
-                os.system(cmd)
-            else:
-                cmd = 'reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run" /v ' + name + ' /f '
-                os.system(cmd)
-        except:
-            self.logger.error('修改开机项失败')
-
-
-# 子线程要执行的代码
-def loginstart(self):
-    self.logger.debug("第一次运行测试")
-    login.main(self)  # 第一次启动
-    sleep(5)
-    if self.time_unit == 'minutes':
-        schedule.every(self.conf.getint('run', 'every_time')).minutes.do(login.main, self)
-    elif self.time_unit == 'seconds':
-        schedule.every(self.conf.getint('run', 'every_time')).seconds.do(login.main, self)  # 测试
-    else:
-        self.logger.critical('conf.ini配置错误：{}'.format(
-            self.conf.getint('run', 'every_time'),
-            self.conf.get('run', 'time_unit')
-        ))
-        sys.exit(1)
-    while 1:
-        schedule.run_pending()
-        sleep(1)
 
 
 if __name__ == '__main__':
     # 初始化程序
-    initConfig()  # 初始化数据到配置文件
     initLog()  # 初始化log文件
     # 下面是使用wxPython的固定用法
     app = wx.App()
