@@ -96,14 +96,17 @@ class MainThread(threading.Thread):
             """
             远程下线
             """
-            res = requests.get('http://localhost:5001/logout?userid={}&token={}'.format(self.userid, self.logout_token))
+            url = 'http://localhost:5001/logout?userid={}&token={}'.format(self.userid, self.logout_token)
+            res = requests.get(url)
             if res.status_code == 200:
                 global is_running
                 is_running = False
-                login.logout_campus_network()
-                logger.warning('远程下线成功')
-            else:
-                logger.debug(res.status_code)
+                del_res = requests.delete(url)
+                if del_res.status_code == 200:
+                    login.logout_campus_network()
+                    logger.warning('远程下线成功')
+                else:
+                    logger.error('远程下线失败 status code:{}'.format(del_res.status_code))
         
         logger.debug("第一次运行测试")
         login.main(self.userid, self.password)  # 第一次启动
