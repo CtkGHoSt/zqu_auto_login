@@ -1,16 +1,17 @@
-# 肇庆学院电信wifi校园网自动登录 [![](https://img.shields.io/badge/release-1.0.1-brightgreen.svg)](https://github.com/CtkGHoSt/zqu_auto_login/releases)
+# 肇庆学院电信wifi校园网自动登录 [![](https://img.shields.io/badge/release-1.0.2-brightgreen.svg)](https://github.com/CtkGHoSt/zqu_auto_login/releases)
 
 
 ### by ctkghost chiihero
 ---
 ![](https://s1.ax1x.com/2018/12/27/FRr06H.png)     
 在可验证的时间段内每隔一段时间判断一次状态，在非联网状态下登录校园局域网和电信校园网
-> * 直接双击执行zqu_auto_login.exe
+> * ###直接双击执行zqu_auto_login.exe，输入学号密码，点击开启即可
+>* 文件偏大原因在于用python打包运行环境而成，运行后占用资源非常小
 
 ---
 ### 说明
-文件偏大原因在于用python打包运行环境而成，运行后占用资源非常小\
-若需要修 改conf.ini文件,需要运行一次zqu_auto_login.exe文件\
+
+若需要修改conf.ini文件,需要运行一次zqu_auto_login.exe文件(适用于需要自定义用户)\
 conf.ini ：
 ```
 [user]
@@ -34,6 +35,11 @@ todo：
 周末的凌晨允许登录
 …
 
+> v1.0.2 更新    
+使用分割日志，并且定时清除
+重构代码
+修复无法退出bug
+添加周末凌晨运行
 
 > v1.0.1 更新    
 添加最小化任务栏模式
