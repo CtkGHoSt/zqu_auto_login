@@ -53,7 +53,7 @@ class MainThread(threading.Thread):
 
     def run(self):  # 线程执行的代码
         self.auto_start()
-        logger.info('学号：' + self.userid + ' 密码:' + self.password)
+        logger.debug('学号：' + self.userid + ' 密码:' + self.password)
         self.login_start()
 
     def auto_start(self):

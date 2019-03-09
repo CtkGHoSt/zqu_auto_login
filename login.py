@@ -74,7 +74,7 @@ def online_time():
 
 def auto_login_1(userid, password):
     logger.info('开始局域网验证')
-    logger.info('学号：' + userid + ' 密码:' + password)
+    logger.debug('学号：' + userid + ' 密码:' + password)
 
     try:
         test_status = requests.get(test_url)  # 获取重定向连接
@@ -118,7 +118,7 @@ def auto_login_1(userid, password):
 
 def auto_login_2(userid, password):
     logger.info('开始电信验证')
-    logger.info('学号：'+userid+' 密码:'+password)
+    logger.debug('学号：'+userid+' 密码:'+password)
 
     se = requests.session()  # 新建会话
     test_status = se.get(test_url)  # 获取重定向连接
