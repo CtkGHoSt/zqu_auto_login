@@ -13,7 +13,7 @@ import logging
 from logging.handlers import TimedRotatingFileHandler
 import sys
 
-from config import file_abspath, location, logger, conf
+from config import file_abspath, location, logger, conf, config_file, is_running
 
 
 # 创建mainWin类并传入my_win.MyFrame
@@ -26,15 +26,21 @@ class MainWin(frame.MyFrame):
 
     def open(self, event):
         if self.btn_open.GetLabel() == "开启":
-            self.btn_open.SetLabel("关闭")
+            is_running = True
+            self.btn_open.SetLabel("停止")
             userid, password, check = main_win.getvalue(self)
             conf.set('user', 'userid', value=userid)
             conf.set('user', 'password', password)
             conf.set('user', 'check', str(check))
+            with open(config_file, 'w') as fw:  # 循环写入
+                conf.write(fw)
             thread = MainThread(userid, password, check)
             thread.start()
         else:
-            os._exit(0)
+            # os._exit(0)
+            self.btn_open.SetLabel("开启")
+            is_running = False
+            logger.info('停止运行')
 
     # 初始化程序
 
@@ -85,7 +91,7 @@ class MainThread(threading.Thread):
                 conf.get('run', 'time_unit')
             ))
             sys.exit(1)
-        while 1:
+        while is_running:
             schedule.run_pending()
             sleep(1)
 
