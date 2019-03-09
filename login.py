@@ -63,7 +63,10 @@ def is_campus_network():
         return 1
 
 def online_time():
-    now = datetime.now().strftime("%H:%M")
+    now_date = datetime.now()
+    if now_date.weekday() >=5: # 周末
+        return True
+    now = now_date.strftime("%H:%M")
     if now > conf.get('run', 'begin_time') and now < conf.get('run', 'end_time'):#旧版本
         return True
     return False
