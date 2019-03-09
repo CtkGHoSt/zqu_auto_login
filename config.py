@@ -5,6 +5,9 @@ import logging
 
 from configparser import ConfigParser
 
+# 运行状态
+is_running = False
+
 # 路径
 file_abspath = os.path.abspath(sys.argv[0])  # exe所在目录地址
 location = os.path.dirname(file_abspath)  # exe所在文件夹目录地址
