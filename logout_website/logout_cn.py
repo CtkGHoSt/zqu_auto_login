@@ -1,3 +1,5 @@
+from model import *
+
 from flask import Flask, render_template, request, url_for, redirect, abort
 
 app = Flask('logout')
@@ -18,17 +20,31 @@ def main():
 def logout_api():
     userid = request.values.get('userid')
     token = request.values.get('token')
+    ip = request.remote_addr
     if request.method == 'GET':
-        if userid == '201624131440' and token == 'test123':
+        try:
+            logout_comment.get(userid=userid, token=token)
             return ''
-        else:
+        except DoesNotExist:
             abort(404)
     elif request.method == 'POST':
-        return '<h1>REMOTE LOGOUT SUCCESS!</h1>'
+        if len(logout_comment.select().where(logout_comment.ip == ip)) >= 3:
+            return abort(403)
+        try:
+            logout_comment.get(userid=userid)
+            return '<h1>REMOTE LOGOUT ERROR!</h1>'
+        except DoesNotExist:
+            logout_comment.create(userid=userid, token=token, ip=ip)
+            return '<h1>REMOTE LOGOUT SUCCESS!</h1>'
     elif request.method == 'DELETE':
-        return ''
+        try:
+            del_item = logout_comment.get(userid=userid, token=token)
+            del_item.delete_instance()
+            return ''
+        except DoesNotExist:
+            abort(404)
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0',port=5001,debug=False)
+    app.run(host='localhost',port=5001,debug=False)
 
 # %tb
