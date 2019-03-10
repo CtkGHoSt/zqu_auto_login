@@ -1,14 +1,54 @@
-<html>
+<!DOCTYPE html>
+<html lang="zh-CN">
+
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>校园网 远程下线</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>校园网 远程下线</title>
+    <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
+    <!-- <link href="./css/bootstrap.min.css" rel="stylesheet"> -->
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #b1b1b1;
+            background-repeat: repeat-x;
+            background-attachment: fixed;
+            padding: 0;
+            margin: 0;
+        }
+        .container{
+            margin-top: 10%
+        }
+    </style>
 </head>
-   <body>
-        <h2>远程下线</h2>
-      <form action = "http://ovz.ctkghost.tk/logout" method = "POST">
-         <p>学号<input type = "text" name = "userid" /></p>
-         <p>口令<input type = "text" name = "token" /></p>
-         <p><input type = "submit" value = "提交" /></p>
-      </form>
-   </body>
+
+<body>
+    <div class="container">
+        <h1 class="text-center">远程下线</h1>
+        <form action="http://ovz.ctkghost.tk/logout" method="POST">
+            <div class="form-group col-sm-offset-4 col-sm-4">
+                <div class="input-group">
+                    <span class="input-group-addon">
+                        <i class="glyphicon glyphicon-user"></i>
+                    </span>
+                    <input type="text" class="form-control" id="userid" name="userid" placeholder="请输入学号">
+                </div>
+                <div class="edit input-group">
+                    <span class="input-group-addon">
+                        <i class="glyphicon glyphicon-lock"></i>
+                    </span>
+                    <input type="text" class="form-control" id="token" name="token" placeholder="口令" />
+                </div>
+                <button type="submit" class="btn btn-success btn-block"> 提交</button>
+            </div>
+
+        </form>
+    </div>
+</body>
+<script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
+<script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<!-- <script src="./js/jquery.min.js"></script> -->
+<!-- <script src="./js/bootstrap.min.js"></script> -->
+
 </html>
