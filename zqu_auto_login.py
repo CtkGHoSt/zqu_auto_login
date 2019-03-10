@@ -113,7 +113,7 @@ class MainThread(threading.Thread):
         logout_token = conf.get('user', 'logout_token')
         # 远程下线
         if self.check_logout and self.logout_token:
-            schedule.every(2).seconds.do(remote_logout)
+            schedule.every(10).seconds.do(remote_logout)
         if conf.get('run', 'time_unit') == 'minutes':
             schedule.every(conf.getint('run', 'every_time')).minutes.do(login.main, self.userid, self.password)
         elif conf.get('run', 'time_unit') == 'seconds':
