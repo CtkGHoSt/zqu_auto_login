@@ -31,11 +31,13 @@ def logout_api():
         if len(logout_comment.select().where(logout_comment.ip == ip)) >= 3:
             return abort(403)
         try:
-            logout_comment.get(userid=userid)
-            return '<h1>REMOTE LOGOUT ERROR!</h1>'
+            a = logout_comment.get(userid=userid)
+            a.token = token
+            a.ip = ip
+            a.save()
         except DoesNotExist:
             logout_comment.create(userid=userid, token=token, ip=ip)
-            return '<h1>REMOTE LOGOUT SUCCESS!</h1>'
+        return '<h1>REMOTE LOGOUT SUCCESS!</h1>'
     elif request.method == 'DELETE':
         try:
             del_item = logout_comment.get(userid=userid, token=token)
