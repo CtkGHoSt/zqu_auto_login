@@ -42,8 +42,8 @@ def logout_api():
             a.save()
         except DoesNotExist:
             logout_comment.create(userid=userid, token=token, ip=ip)
-        return render_template('success.html')
-        # return '<h1>REMOTE LOGOUT SUCCESS!</h1>'
+        # return render_template('success.html')
+        return '<h1>REMOTE LOGOUT SUCCESS!</h1>'
 
     elif request.method == 'DELETE':
         try:
