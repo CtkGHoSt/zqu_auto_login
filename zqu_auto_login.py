@@ -96,7 +96,7 @@ class MainThread(threading.Thread):
             """
             远程下线
             """
-            url = 'http://localhost:5001/logout?userid={}&token={}'.format(self.userid, self.logout_token)
+            url = 'http://ovz.ctkghost.tk/logout?userid={}&token={}'.format(self.userid, self.logout_token)
             res = requests.get(url)
             if res.status_code == 200:
                 global is_running
