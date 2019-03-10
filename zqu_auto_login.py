@@ -51,7 +51,7 @@ class MainWin(frame.MyFrame):
             thread.start()
         else:
             # os._exit(0)
-            self.btn_open.SetLabel("开启")
+            # self.btn_open.SetLabel("开启")
             is_running = False
             logger.info('停止运行')
 
@@ -64,7 +64,7 @@ class MainThread(threading.Thread):
         self.btn_open = argv['btn_open']
         self.logout_token = argv['logout_token']
         self.check_logout = argv['check_logout']
-        self.check_autorun = argv['autorun']
+        self.check_autorun = argv['check_autorun']
 
     def run(self):  # 线程执行的代码
         self.auto_start()
