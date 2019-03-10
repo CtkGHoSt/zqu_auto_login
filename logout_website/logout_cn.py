@@ -28,6 +28,8 @@ def logout_api():
         except DoesNotExist:
             abort(404)
     elif request.method == 'POST':
+        if userid == '' or token == '':
+            return '<h1>ERROR!</h1>'
         if len(logout_comment.select().where(logout_comment.ip == ip)) >= 3:
             return abort(403)
         try:
