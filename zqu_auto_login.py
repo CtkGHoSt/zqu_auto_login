@@ -97,6 +97,7 @@ class MainThread(threading.Thread):
         while is_running:
             schedule.run_pending()
             sleep(1)
+        schedule.clear()
 
 
 def init_log():
