@@ -37,7 +37,6 @@ class MainWin(frame.MyFrame):
             conf.set('user', 'password', password)
             conf.set('user', 'check_logout', str(logout))
             conf.set('user', 'logout_token', logout_token)
-
             conf.set('user', 'check_autorun', str(autorun))
             with open(config_file, 'w') as fw:  # 循环写入
                 conf.write(fw)
