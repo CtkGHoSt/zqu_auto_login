@@ -20,7 +20,10 @@ def main():
 def logout_api():
     userid = request.values.get('userid')
     token = request.values.get('token')
-    ip = request.remote_addr
+    if request.headers.getlist("X-Forwarded-For"):
+       ip = request.headers.getlist("X-Forwarded-For")[0]
+    else:
+       ip = request.remote_addr
     if request.method == 'GET':
         try:
             logout_comment.get(userid=userid, token=token)
