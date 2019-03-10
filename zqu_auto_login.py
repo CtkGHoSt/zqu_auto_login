@@ -41,10 +41,11 @@ class MainWin(frame.MyFrame):
             with open(config_file, 'w') as fw:  # 循环写入
                 conf.write(fw)
             thread = MainThread(
-                userid=userid, 
-                password=password, 
-                check_logout=logout, 
-                btn_open=self.btn_open, 
+                userid=userid,
+                password=password,
+                check_logout=logout,
+                check_autorun=autorun,
+                btn_open=self.btn_open,
                 logout_token=logout_token
             )
             thread.start()
@@ -63,6 +64,7 @@ class MainThread(threading.Thread):
         self.btn_open = argv['btn_open']
         self.logout_token = argv['logout_token']
         self.check_logout = argv['check_logout']
+        self.check_autorun = argv['autorun']
 
     def run(self):  # 线程执行的代码
         self.auto_start()
@@ -80,7 +82,7 @@ class MainThread(threading.Thread):
         name = 'AutoLogin_ZQU'  # 要添加的项值名称
         if 'Windows' in platform.system():
             try:
-                if self.check:
+                if self.check_autorun:
                     cmd = 'reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run" /v ' + name + ' /t reg_sz /d "' + file_abspath + '" /f '
                     os.system(cmd)
                 else:
@@ -91,6 +93,7 @@ class MainThread(threading.Thread):
 
     def login_start(self):
         """子线程要执行的代码"""
+
         def remote_logout():
             """
             远程下线
@@ -106,7 +109,7 @@ class MainThread(threading.Thread):
                     logger.warning('远程下线成功')
                 else:
                     logger.error('远程下线失败 status code:{}'.format(del_res.status_code))
-        
+
         logger.debug("第一次运行测试")
         login.main(self.userid, self.password)  # 第一次启动
         sleep(5)
@@ -130,6 +133,7 @@ class MainThread(threading.Thread):
             sleep(1)
         schedule.clear()
         self.btn_open.SetLabel("开启")
+
 
 def init_log():
     level = conf.get('run', 'log_level')
