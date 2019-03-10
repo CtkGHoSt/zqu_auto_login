@@ -21,11 +21,25 @@
             margin-top: 10%
         }
     </style>
+    <script type="text/javascript">
+        var num = 5;
+        function redirect(){
+            num--;
+            document.getElementById("num").innerHTML = num;
+            if(num<0){
+                document.getElementById("num").innerHTML = 0;
+                location.href='./logout.html';
+            }
+        }
+        setInterval("redirect()", 1000);
+    </script>
 </head>
 
 <body>
     <div class="container">
         <h1 class="text-center">REMOTE LOGOUT SUCCESS!</h1>
+        <h3 class="text-center"><span id="num">5</span>秒后自动跳转到主页</h3>
+
 
     </div>
 </body>
