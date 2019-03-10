@@ -15,7 +15,7 @@ class BaseModel(Model):
 class logout_comment(BaseModel):
     userid = CharField(primary_key=True)
     token = CharField()
-    gentime = DateTimeField(default=datetime.datetime.now())
+    gentime = DateTimeField(default=datetime.datetime.now)
     ip = CharField()
 
 if __name__ == '__main__':
