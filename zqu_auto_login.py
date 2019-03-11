@@ -50,6 +50,8 @@ class MainWin(frame.MyFrame):
             )
             thread.start()
         else:
+            self.btn_open.SetLabel("等待")
+            self.btn_open.Enable(False)
             # os._exit(0)
             # self.btn_open.SetLabel("开启")
             is_running = False
@@ -109,7 +111,6 @@ class MainThread(threading.Thread):
                     logger.warning('远程下线成功')
                 else:
                     logger.error('远程下线失败 status code:{}'.format(del_res.status_code))
-
         logger.debug("第一次运行测试")
         login.main(self.userid, self.password)  # 第一次启动
         sleep(5)
@@ -133,6 +134,7 @@ class MainThread(threading.Thread):
             sleep(1)
         schedule.clear()
         self.btn_open.SetLabel("开启")
+        self.btn_open.Enable(True)
 
 
 def init_log():
