@@ -66,10 +66,10 @@ class MainThread(threading.Thread):
         self.btn_open = argv['btn_open']
         self.logout_token = argv['logout_token']
         self.check_logout = argv['check_logout']
-        self.check_autorun = argv['check_autorun']
+        # self.check_autorun = argv['check_autorun']
 
     def run(self):  # 线程执行的代码
-        self.auto_start()
+        # self.auto_start()
         logger.debug('学号：' + self.userid + ' 密码:' + self.password)
         self.login_start()
 

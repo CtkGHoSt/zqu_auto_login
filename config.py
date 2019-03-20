@@ -16,6 +16,9 @@ config_file = location + "\conf.ini"
 # log
 logger = logging.getLogger("mylogger")
 
+#常量名称
+auto_run_name = 'AutoLogin_ZQU'  # 要添加的项值名称
+
 
 # conf.ini
 def load_conf():
