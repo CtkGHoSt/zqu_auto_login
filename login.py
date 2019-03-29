@@ -8,7 +8,7 @@ from urllib import parse
 from ver_code import validation_code_recognition
 from urllib.parse import parse_qs, urlparse
 
-from config import logger, conf
+from config import logger, conf, init_log
 
 test_url = 'http://quan.suning.com/getSysTime.do'  # 测试连接状态url
 
@@ -249,3 +249,53 @@ def logout_campus_network():
         logout_url, data={'userIndex': user_index}, headers=http_headers)
     logger.info('登出状态：{}'.format(res.status_code))
     return res.status_code
+
+
+def main(userid, password):
+    logger.info('验证时间段')
+    if not online_time():
+        logger.info('不在验证时间段内')
+        return -1
+    logger.info('判断校园网')
+    if is_campus_network() != 1:
+        connect_wifi()
+        # return 0
+    logger.info('判断联网状态')
+    if check_net() == -1:
+        logger.info('可以上网')
+        return 0
+    try:
+        # 若密码长度为6当成移动网络，8位电信网络
+        if len(password) == 6:
+            auto_login_1(userid, password)
+        elif len(password) == 8:
+            auto_login_1(userid, password[2:])
+            sleep(2)
+            auto_login_2(userid, password)
+        else:
+            logger.error("密码错误")
+    except Exception as e:
+        logger.error("未知异常：{}".format(e))
+
+if __name__ == '__main__':
+    init_log()
+    import schedule
+    userid = conf.get('user', 'userid')
+    password = conf.get('user', 'password')
+    logger.debug("第一次运行测试")
+    main(userid, password)
+    sleep(5)
+    if conf.get('run', 'time_unit') == 'minutes':
+        schedule.every(conf.getint('run', 'every_time')).minutes.do(main, userid, password)
+    elif conf.get('run', 'time_unit') == 'seconds':
+        schedule.every(conf.getint('run', 'every_time')).seconds.do(main, userid, password)  # 测试
+    else:
+        logger.critical('conf.ini配置错误：{}'.format(
+            conf.getint('run', 'every_time'),
+            conf.get('run', 'time_unit')
+        ))
+        sys.exit(1)
+    while 1:
+        schedule.run_pending()
+        sleep(1)
+    schedule.clear()
