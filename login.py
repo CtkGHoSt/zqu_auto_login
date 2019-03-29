@@ -146,9 +146,7 @@ def auto_login_2(userid, password):
         'Upgrade-Insecure-Requests': '1',
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.140 Safari/537.36 Edge/18.17763'
     }
-
     url_parse_dict = dict()
-
     try:
         http_headers['Referer'] = test_status.url
         url_parse = parse.urlparse(test_status.url)  # 获取链接参数
@@ -181,39 +179,8 @@ def auto_login_2(userid, password):
     }
 
     login_http = 'http://enet.10000.gd.cn:10001/login.do'
-
     haha = se.post(url=login_http, headers=http_headers, data=post_text)
-
     return haha.status_code
-
-
-def main(userid, password):
-    logger.info('验证时间段')
-    if not online_time():
-        logger.info('不在验证时间段内')
-        return -1
-    logger.info('判断校园网')
-    if is_campus_network() != 1:
-        connect_wifi()
-        # return 0
-
-    logger.info('判断联网状态')
-    if check_net() == -1:
-        logger.info('可以上网')
-        return 0
-    try:
-        # 若密码长度为6当成移动网络，8位电信网络
-        if len(password) == 6:
-            auto_login_1(userid, password)
-        elif len(password) == 8:
-            auto_login_1(userid, password[2:])
-            sleep(2)
-            auto_login_2(userid, password)
-        else:
-            logger.error("密码错误")
-
-    except Exception as e:
-        logger.error("未知异常：{}".format(e))
 
 
 def logout_campus_network():
@@ -276,7 +243,6 @@ def main(userid, password):
             logger.error("密码错误")
     except Exception as e:
         logger.error("未知异常：{}".format(e))
-
 if __name__ == '__main__':
     init_log()
     import schedule

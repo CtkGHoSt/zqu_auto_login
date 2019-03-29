@@ -19,6 +19,9 @@ config_file = location + "\conf.ini"
 # log
 logger = logging.getLogger("mylogger")
 
+#常量名称
+auto_run_name = 'AutoLogin_ZQU'  # 要添加的项值名称
+
 
 # conf.ini
 def load_conf():
@@ -37,7 +40,8 @@ def load_conf():
                    "every_time = 5\n" \
                    "begin_time = 07:00\n" \
                    "end_time = 23:59\n" \
-                   "log_level = debug\n"
+                   "log_level = debug\n" \
+                   "logout_token = \n"
             f = open(location + "\conf.ini", 'w')
             f.write(date)
             f.close()

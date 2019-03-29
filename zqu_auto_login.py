@@ -11,6 +11,7 @@ import platform
 import threading
 import logging
 import sys
+import requests
 
 from config import file_abspath, location, logger, conf, config_file, is_running, init_log
 
@@ -26,6 +27,7 @@ class MainWin(frame.MyFrame):
         return userid, password, logout, logout_token, autorun
 
     def open(self, event):
+        global is_running
         if self.btn_open.GetLabel() == "开启":
             is_running = True
             self.btn_open.SetLabel("停止")
@@ -37,24 +39,36 @@ class MainWin(frame.MyFrame):
             conf.set('user', 'check_autorun', str(autorun))
             with open(config_file, 'w') as fw:  # 循环写入
                 conf.write(fw)
-            thread = MainThread(userid, password, autorun)
+            thread = MainThread(
+                userid=userid,
+                password=password,
+                check_logout=logout,
+                check_autorun=autorun,
+                btn_open=self.btn_open,
+                logout_token=logout_token
+            )
             thread.start()
         else:
+            self.btn_open.SetLabel("等待")
+            self.btn_open.Enable(False)
             # os._exit(0)
-            self.btn_open.SetLabel("开启")
+            # self.btn_open.SetLabel("开启")
             is_running = False
             logger.info('停止运行')
 
 
 class MainThread(threading.Thread):
-    def __init__(self, userid, password, check):  # 线程实例化时立即启动
+    def __init__(self, **argv):  # 线程实例化时立即启动
         threading.Thread.__init__(self)
-        self.userid = userid
-        self.password = password
-        self.check = check
+        self.userid = argv['userid']
+        self.password = argv['password']
+        self.btn_open = argv['btn_open']
+        self.logout_token = argv['logout_token']
+        self.check_logout = argv['check_logout']
+        # self.check_autorun = argv['check_autorun']
 
     def run(self):  # 线程执行的代码
-        self.auto_start()
+        # self.auto_start()
         logger.debug('学号：' + self.userid + ' 密码:' + self.password)
         self.login_start()
 
@@ -69,7 +83,7 @@ class MainThread(threading.Thread):
         name = 'AutoLogin_ZQU'  # 要添加的项值名称
         if 'Windows' in platform.system():
             try:
-                if self.check:
+                if self.check_autorun:
                     cmd = 'reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run" /v ' + name + ' /t reg_sz /d "' + file_abspath + '" /f '
                     os.system(cmd)
                 else:
@@ -80,9 +94,29 @@ class MainThread(threading.Thread):
 
     def login_start(self):
         """子线程要执行的代码"""
+
+        def remote_logout():
+            """
+            远程下线
+            """
+            url = 'http://ovz.ctkghost.tk/logout?userid={}&token={}'.format(self.userid, self.logout_token)
+            res = requests.get(url)
+            if res.status_code == 200:
+                global is_running
+                is_running = False
+                del_res = requests.delete(url)
+                if del_res.status_code == 200:
+                    login.logout_campus_network()
+                    logger.warning('远程下线成功')
+                else:
+                    logger.error('远程下线失败 status code:{}'.format(del_res.status_code))
         logger.debug("第一次运行测试")
         login.main(self.userid, self.password)  # 第一次启动
         sleep(5)
+        logout_token = conf.get('user', 'logout_token')
+        # 远程下线
+        if self.check_logout and self.logout_token:
+            schedule.every(10).seconds.do(remote_logout)
         if conf.get('run', 'time_unit') == 'minutes':
             schedule.every(conf.getint('run', 'every_time')).minutes.do(login.main, self.userid, self.password)
         elif conf.get('run', 'time_unit') == 'seconds':
@@ -93,10 +127,13 @@ class MainThread(threading.Thread):
                 conf.get('run', 'time_unit')
             ))
             sys.exit(1)
+        global is_running
         while is_running:
             schedule.run_pending()
             sleep(1)
         schedule.clear()
+        self.btn_open.SetLabel("开启")
+        self.btn_open.Enable(True)
 
 
 """
