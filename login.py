@@ -8,7 +8,7 @@ from urllib import parse
 from ver_code import validation_code_recognition
 from urllib.parse import parse_qs, urlparse
 
-from config import logger, conf
+from config import logger, conf, init_log
 
 test_url = 'http://quan.suning.com/getSysTime.do'  # 测试连接状态url
 
@@ -243,3 +243,25 @@ def main(userid, password):
             logger.error("密码错误")
     except Exception as e:
         logger.error("未知异常：{}".format(e))
+if __name__ == '__main__':
+    init_log()
+    import schedule
+    userid = conf.get('user', 'userid')
+    password = conf.get('user', 'password')
+    logger.debug("第一次运行测试")
+    main(userid, password)
+    sleep(5)
+    if conf.get('run', 'time_unit') == 'minutes':
+        schedule.every(conf.getint('run', 'every_time')).minutes.do(main, userid, password)
+    elif conf.get('run', 'time_unit') == 'seconds':
+        schedule.every(conf.getint('run', 'every_time')).seconds.do(main, userid, password)  # 测试
+    else:
+        logger.critical('conf.ini配置错误：{}'.format(
+            conf.getint('run', 'every_time'),
+            conf.get('run', 'time_unit')
+        ))
+        sys.exit(1)
+    while 1:
+        schedule.run_pending()
+        sleep(1)
+    schedule.clear()
