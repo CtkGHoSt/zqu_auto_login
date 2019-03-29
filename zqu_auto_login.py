@@ -10,10 +10,9 @@ from time import sleep
 import platform
 import threading
 import logging
-from logging.handlers import TimedRotatingFileHandler
 import sys
 
-from config import file_abspath, location, logger, conf, config_file, is_running
+from config import file_abspath, location, logger, conf, config_file, is_running, init_log
 
 
 # 创建mainWin类并传入my_win.MyFrame
@@ -98,40 +97,6 @@ class MainThread(threading.Thread):
             schedule.run_pending()
             sleep(1)
         schedule.clear()
-
-
-def init_log():
-    level = conf.get('run', 'log_level')
-    if level == 'info':
-        log_level = logging.INFO
-    elif level == 'warning':
-        log_level = logging.WARNING
-    else:
-        log_level = logging.DEBUG
-    """
-    log日志，按时间分割，清理过时日志
-    """
-    run_log = location + "\\log\\run.log"
-    logger.setLevel(log_level)
-    format = logging.Formatter("[%(asctime)s]-%(levelname)-6s %(module)s:%(lineno)d - %(message)s", "%m-%d %H:%M:%S")
-    """
-    切割日志
-    结果是每1天生成一个日志文件，保留最近10次的日志文件,MIDNIGHT
-    when参数可以设置S M H D,分别是秒、分、小时、天分割，也可以按周几分割，也可以凌晨分割
-    """
-    handler = TimedRotatingFileHandler(run_log, when='MIDNIGHT', interval=1,
-                                       backupCount=30, encoding='utf-8',
-                                       atTime=datetime.time(0, 0, 0, 0))
-    handler.suffix = "%Y-%m-%d.log"  # 切割后的日志设置后缀
-    handler.extMatch = re.compile(r"^\d{4}-\d{2}-\d{2}.log$")
-    handler.setLevel(log_level)
-    handler.setFormatter(format)
-    logger.addHandler(handler)
-    # 既输出到文件，又打印到terminal
-    console = logging.StreamHandler()
-    console.setLevel(log_level)
-    console.setFormatter(format)
-    logging.getLogger().addHandler(console)
 
 
 """
