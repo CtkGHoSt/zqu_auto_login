@@ -29,8 +29,13 @@ log_level = debug 日志级别输出 （debug/info/warning）
 ```
 
 >
+已知bug：   
+远程下线可能导致再次登录  
+验证码获取文件错误导致自动下线     
+…   
+>
 todo：   
-远程下线    
+修复bug    
 …
 
 > v1.0.2 更新    
